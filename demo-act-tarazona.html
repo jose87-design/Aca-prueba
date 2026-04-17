@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Misterio en Tarazona · Demo ACT</title>
+  <meta name="description" content="Demo interactiva de juego urbano para ACT Tarazona. HTML único, móvil, integrable en app o webview." />
+  <style>
+    :root{
+      --bg:#0e0f12;
+      --panel:#171a21;
+      --panel-2:#202531;
+      --line:rgba(255,255,255,.08);
+      --text:#eef2f7;
+      --muted:#adb7c7;
+      --accent:#22d3ee;
+      --accent2:#4ade80;
+      --warn:#f59e0b;
+      --danger:#ef4444;
+      --ok:#22c55e;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:24px;
+      --max:820px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:radial-gradient(circle at top left, rgba(34,211,238,.12), transparent 26%),radial-gradient(circle at bottom right, rgba(74,222,128,.12), transparent 30%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    body{min-height:100vh}
+    .wrap{max-width:var(--max);margin:0 auto;padding:20px 16px 110px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(10px)}
+    .hero{padding:22px 20px;margin-top:8px}
+    .brand{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+    .mark{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#071017;font-weight:900;box-shadow:0 10px 30px rgba(34,211,238,.25)}
+    h1,h2,h3,p{margin:0}
+    h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.05;margin-top:8px}
+    .sub{color:var(--muted);margin-top:8px;font-size:1rem;line-height:1.5}
+    .pillrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .pill{font-size:.78rem;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:#d8e0ec}
+    .grid{display:grid;gap:16px;margin-top:16px}
+    .grid.two{grid-template-columns:1.1fr .9fr}
+    @media (max-width:760px){.grid.two{grid-template-columns:1fr}}
+    .section{padding:18px}
+    .title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+    .small{font-size:.82rem;color:var(--muted)}
+    label{display:block;font-size:.78rem;color:#cfd7e4;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+    input,button,textarea{font:inherit}
+    input,textarea{width:100%;background:#0f131a;color:var(--text);border:1px solid var(--line);border-radius:18px;padding:14px 16px;outline:none}
+    input:focus,textarea:focus{border-color:rgba(34,211,238,.55);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+    button{border:0;border-radius:18px;padding:14px 16px;font-weight:800;cursor:pointer}
+    .btn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#081017}
+    .btn.secondary{background:#111722;color:#dbe6f4;border:1px solid var(--line)}
+    .btn.ghost{background:transparent;color:#cfd7e4;border:1px dashed var(--line)}
+    .btn.warn{background:rgba(245,158,11,.14);color:#ffd596;border:1px solid rgba(245,158,11,.3)}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .stack{display:grid;gap:12px}
+    .station-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
+    .badge{min-width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,rgba(34,211,238,.22),rgba(74,222,128,.22));border:1px solid rgba(255,255,255,.08)}
+    .story{padding:16px;border-left:3px solid rgba(34,211,238,.6);background:rgba(255,255,255,.025);border-radius:18px;color:#dbe2ed;line-height:1.65}
+    .codebox{display:grid;gap:10px;margin-top:14px}
+    .hint{padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(34,211,238,.08);color:#d8eef4}
+    .hint.strong{background:rgba(239,68,68,.09);color:#ffd7d7;border-color:rgba(239,68,68,.2)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    @media (max-width:620px){.stats{grid-template-columns:1fr 1fr}}
+    .stat{padding:14px;border-radius:18px;background:var(--panel-2);border:1px solid var(--line)}
+    .stat b{display:block;font-size:1.35rem;margin-top:4px}
+    .list{display:grid;gap:10px}
+    .feature{padding:14px;border-radius:18px;background:var(--panel-2);border:1px solid var(--line)}
+    .feature b{display:block;margin-bottom:6px}
+    .footerbar{position:fixed;left:0;right:0;bottom:0;padding:12px 16px;background:rgba(8,10,14,.84);backdrop-filter:blur(12px);border-top:1px solid var(--line)}
+    .footerin{max-width:var(--max);margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+    .ok{color:var(--ok)} .warnc{color:var(--warn)} .danger{color:var(--danger)}
+    .hide{display:none !important}
+    .center{text-align:center}
+    .result{padding:18px;border-radius:24px;background:linear-gradient(180deg, rgba(74,222,128,.12), rgba(34,211,238,.08));border:1px solid rgba(255,255,255,.1)}
+    a.inline{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero card">
+      <div class="brand">
+        <div class="mark">ACT</div>
+        <div>
+          <div class="small">Propuesta interactiva · Tarazona</div>
+          <div style="font-weight:800">Juego urbano integrable en web o app</div>
+        </div>
+      </div>
+      <h1>Misterio en Tarazona</h1>
+      <p class="sub">Versión pensada para presentar a ACT Tarazona: más clara, más vendible y más fácil de integrar. Funciona como <b>HTML único</b>, sin base de datos, sin recogida de datos y con progreso local en el móvil.</p>
+      <div class="pillrow">
+        <span class="pill">HTML único</span>
+        <span class="pill">Integrable en app / webview</span>
+        <span class="pill">Sin login</span>
+        <span class="pill">Sin backend</span>
+        <span class="pill">Editable por contenido</span>
+      </div>
+    </section>
+
+    <div class="grid two">
+      <section class="card section">
+        <div class="title">
+          <div>
+            <h2>Demo jugable</h2>
+            <p class="small">He simplificado el acceso: sin email, sin fricción innecesaria.</p>
+          </div>
+          <div class="small" id="progressLabel">Parada 1/4</div>
+        </div>
+
+        <div id="registerView" class="stack">
+          <div>
+            <label>Equipo</label>
+            <input id="teamName" placeholder="Ej. Los Mudéjares" />
+          </div>
+          <div>
+            <label>Modo</label>
+            <input id="gameMode" value="Demo ACT Tarazona" />
+          </div>
+          <button class="btn" id="startBtn">Empezar investigación</button>
+          <p class="small">Puedes resetear el progreso en cualquier momento. Los datos solo se guardan en este dispositivo.</p>
+        </div>
+
+        <div id="gameView" class="stack hide">
+          <div class="stats">
+            <div class="stat"><span class="small">Tiempo</span><b id="timeStat">0m</b></div>
+            <div class="stat"><span class="small">Penalización</span><b id="penaltyStat">+0m</b></div>
+            <div class="stat"><span class="small">Pistas</span><b id="hintsStat">0</b></div>
+          </div>
+
+          <div class="station-head">
+            <div class="badge" id="stationBadge">01</div>
+            <div>
+              <h3 id="stationTitle">Título</h3>
+              <p class="small" id="stationArea">Zona</p>
+            </div>
+          </div>
+
+          <div class="story" id="stationText"></div>
+
+          <div class="codebox">
+            <label>Código encontrado</label>
+            <input id="codeInput" class="mono" placeholder="Introduce la clave..." />
+            <button class="btn" id="validateBtn">Validar clave</button>
+            <div id="feedback" class="small"></div>
+          </div>
+
+          <div class="stack">
+            <button class="btn secondary" id="hint1Btn">Ver pista 1</button>
+            <div id="hint1" class="hint hide"></div>
+            <button class="btn ghost" id="hint2Btn">Ver pista 2</button>
+            <div id="hint2" class="hint strong hide"></div>
+          </div>
+
+          <div id="rewardBox" class="result hide">
+            <h3>Clave correcta</h3>
+            <p id="rewardText" style="margin-top:8px;color:#dff8ef;line-height:1.6"></p>
+            <button class="btn" id="nextBtn" style="margin-top:14px">Continuar</button>
+          </div>
+        </div>
+
+        <div id="endView" class="hide">
+          <div class="result center">
+            <h2>Caso resuelto</h2>
+            <p style="margin-top:8px;color:#d9f7ee">Has completado la demo del recorrido.</p>
+            <div class="pillrow" style="justify-content:center;margin-top:16px">
+              <span class="pill">Tiempo total: <b id="endTime"></b></span>
+              <span class="pill">Penalización: <b id="endPenalty"></b></span>
+              <span class="pill">Resultado: <b id="endScore"></b></span>
+            </div>
+            <p class="small" style="margin-top:16px">Esto ya sirve como MVP presentable. Para producción, ACT podría cambiar textos, códigos, premios, rutas y branding sin tocar la lógica principal.</p>
+            <button class="btn secondary" id="restartBtn" style="margin-top:14px">Reiniciar demo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="title">
+          <div>
+            <h2>Mejoras para ACT Tarazona</h2>
+            <p class="small">Lo importante aquí no es solo que funcione: es que sea defendible comercialmente.</p>
+          </div>
+        </div>
+        <div class="list">
+          <div class="feature"><b>1. Menos fricción</b>He quitado el email obligatorio. Para turismo y calle, pedir datos demasiado pronto frena la participación.</div>
+          <div class="feature"><b>2. Integrable</b>Este formato puede incrustarse en una app como webview o abrirse desde QR, web, Instagram o link directo.</div>
+          <div class="feature"><b>3. Mantenible</b>Las paradas están en un bloque JSON editable. ACT podría cambiar campañas, comercios, fechas o códigos con facilidad.</div>
+          <div class="feature"><b>4. Escalable</b>Se puede vender como edición Navidad, Cipotegato, familias, colegios, escapada de fin de semana o campaña de dinamización comercial.</div>
+          <div class="feature"><b>5. Privacidad</b>Sin backend ni cookies avanzadas. Ideal para una primera validación rápida sin líos técnicos.</div>
+          <div class="feature"><b>6. Siguiente nivel</b>Después se podría añadir ranking, mapa, QR reales por comercio, validación por geolocalización o panel para ACT.</div>
+        </div>
+
+        <div class="feature" style="margin-top:14px">
+          <b>Mi recomendación para presentar</b>
+          No lo vendas como “juego bonito”. Véndelo como <b>herramienta de activación comercial y turística</b>: aumenta tiempo de permanencia, reparte flujo entre puntos, da visibilidad a comercios y convierte la visita en experiencia.
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="footerbar">
+    <div class="footerin">
+      <div class="small">Demo conceptual lista para compartir o descargar</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn secondary" id="downloadBtn">Descargar HTML</button>
+        <button class="btn warn" id="resetBtn">Borrar progreso</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      penaltyPerError: 3,
+      storageKey: 'act_tarazona_misterio_demo_v2',
+      stations: [
+        {
+          title: 'El eco de la Catedral',
+          area: 'Zona monumental',
+          text: 'La investigación comienza donde la piedra, la luz y la historia se cruzan. Busca el gran símbolo patrimonial que mejor representa a Tarazona. Allí arranca el primer hilo del caso.',
+          hint1: 'Empieza por el lugar más reconocible del casco histórico.',
+          hint2: 'La clave pública de esta demo es: CATEDRAL',
+          code: 'CATEDRAL',
+          reward: 'Primera prueba superada. Aquí ACT podría activar una pista patrocinada, un sello digital o una primera recompensa en comercio local.'
+        },
+        {
+          title: 'La plaza que escucha',
+          area: 'Entorno comercial',
+          text: 'Ahora el caso te lleva a un espacio de paso, encuentro y consumo. El objetivo es demostrar que el recorrido no solo enseña patrimonio: también mueve a la gente entre zonas clave.',
+          hint1: 'Piensa en una plaza o punto central que pueda repartir flujo hacia distintos negocios.',
+          hint2: 'La clave pública de esta demo es: PLAZA',
+          code: 'PLAZA',
+          reward: 'Segunda prueba superada. En versión real aquí ya tendría sentido conectar la experiencia con comercios, hostelería o premios.'
+        },
+        {
+          title: 'El rastro del comercio',
+          area: 'Dinamización local',
+          text: 'Toda buena ruta necesita una razón para continuar. La pista ahora no es solo histórica: es económica. La experiencia debe justificar que el visitante siga explorando y no se quede en una sola zona.',
+          hint1: 'La lógica aquí es clara: más recorrido, más descubrimiento, más impacto local.',
+          hint2: 'La clave pública de esta demo es: COMERCIO',
+          code: 'COMERCIO',
+          reward: 'Tercera prueba superada. Este punto demuestra muy bien la utilidad del proyecto para campañas de ciudad y asociaciones.'
+        },
+        {
+          title: 'Cierre del expediente ACT',
+          area: 'Final de ruta',
+          text: 'La última pieza no busca solo terminar el juego. Busca dejar una sensación de recorrido cerrado, una recompensa clara y una invitación a repetir con otra temática.',
+          hint1: 'El final debe servir como cierre narrativo y como llamada a la siguiente ruta o campaña.',
+          hint2: 'La clave pública de esta demo es: ACTIVA',
+          code: 'ACTIVA',
+          reward: 'Caso resuelto. En producción aquí podría aparecer una recompensa final, un QR de continuidad o una invitación a otra ruta temática.'
+        }
+      ]
+    };
+
+    const $ = s => document.querySelector(s);
+    const state = loadState();
+
+    function normalize(v){
+      return (v || '').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+    }
+    function loadState(){
+      const raw = localStorage.getItem(CONFIG.storageKey);
+      return raw ? JSON.parse(raw) : {
+        team:'', mode:'Demo ACT Tarazona', started:false, startTime:null, penalties:0, hints:0, station:0, finished:false
+      };
+    }
+    function saveState(){ localStorage.setItem(CONFIG.storageKey, JSON.stringify(state)); }
+    function minutes(ms){ return Math.max(0, Math.floor(ms/60000)); }
+    function totalMinutes(){
+      const base = state.startTime ? minutes(Date.now() - state.startTime) : 0;
+      return base + state.penalties;
+    }
+    function render(){
+      $('#progressLabel').textContent = `Parada ${Math.min(state.station + 1, CONFIG.stations.length)}/${CONFIG.stations.length}`;
+      if(!state.started){
+        $('#registerView').classList.remove('hide');
+        $('#gameView').classList.add('hide');
+        $('#endView').classList.add('hide');
+        $('#teamName').value = state.team || '';
+        $('#gameMode').value = state.mode || 'Demo ACT Tarazona';
+        return;
+      }
+      if(state.finished){
+        $('#registerView').classList.add('hide');
+        $('#gameView').classList.add('hide');
+        $('#endView').classList.remove('hide');
+        $('#endTime').textContent = minutes(Date.now()-state.startTime) + 'm';
+        $('#endPenalty').textContent = '+' + state.penalties + 'm';
+        $('#endScore').textContent = totalMinutes() + 'm';
+        return;
+      }
+      const st = CONFIG.stations[state.station];
+      $('#registerView').classList.add('hide');
+      $('#gameView').classList.remove('hide');
+      $('#endView').classList.add('hide');
+      $('#timeStat').textContent = minutes(Date.now()-state.startTime) + 'm';
+      $('#penaltyStat').textContent = '+' + state.penalties + 'm';
+      $('#hintsStat').textContent = state.hints;
+      $('#stationBadge').textContent = String(state.station + 1).padStart(2,'0');
+      $('#stationTitle').textContent = st.title;
+      $('#stationArea').textContent = st.area;
+      $('#stationText').textContent = st.text;
+      $('#hint1').classList.add('hide');
+      $('#hint2').classList.add('hide');
+      $('#hint1').textContent = st.hint1;
+      $('#hint2').textContent = st.hint2;
+      $('#rewardBox').classList.add('hide');
+      $('#rewardText').textContent = st.reward;
+      $('#feedback').textContent = '';
+      $('#feedback').className = 'small';
+      $('#codeInput').value = '';
+    }
+
+    $('#startBtn').addEventListener('click',()=>{
+      const team = $('#teamName').value.trim();
+      const mode = $('#gameMode').value.trim() || 'Demo ACT Tarazona';
+      if(!team){ $('#teamName').focus(); return; }
+      state.team = team; state.mode = mode; state.started = true; state.startTime = Date.now(); state.penalties = 0; state.hints = 0; state.station = 0; state.finished = false;
+      saveState(); render();
+    });
+
+    $('#validateBtn').addEventListener('click',()=>{
+      const st = CONFIG.stations[state.station];
+      const input = normalize($('#codeInput').value);
+      if(!input) return;
+      if(input === normalize(st.code)){
+        $('#feedback').textContent = 'Clave correcta.';
+        $('#feedback').className = 'small ok';
+        $('#rewardBox').classList.remove('hide');
+      } else {
+        state.penalties += CONFIG.penaltyPerError;
+        saveState();
+        $('#feedback').textContent = `Clave incorrecta. +${CONFIG.penaltyPerError} minutos de penalización.`;
+        $('#feedback').className = 'small danger';
+        $('#penaltyStat').textContent = '+' + state.penalties + 'm';
+      }
+    });
+
+    $('#hint1Btn').addEventListener('click',()=>{
+      $('#hint1').classList.remove('hide');
+      state.hints += 1; saveState(); $('#hintsStat').textContent = state.hints;
+    });
+    $('#hint2Btn').addEventListener('click',()=>{
+      $('#hint2').classList.remove('hide');
+      state.hints += 1; saveState(); $('#hintsStat').textContent = state.hints;
+    });
+    $('#nextBtn').addEventListener('click',()=>{
+      if(state.station >= CONFIG.stations.length - 1){
+        state.finished = true;
+      } else {
+        state.station += 1;
+      }
+      saveState(); render();
+    });
+    function hardReset(){
+      localStorage.removeItem(CONFIG.storageKey);
+      state.team=''; state.mode='Demo ACT Tarazona'; state.started=false; state.startTime=null; state.penalties=0; state.hints=0; state.station=0; state.finished=false;
+      render();
+    }
+    $('#restartBtn').addEventListener('click', hardReset);
+    $('#resetBtn').addEventListener('click', hardReset);
+
+    $('#downloadBtn').addEventListener('click',()=>{
+      const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ACT_Tarazona_Misterio_singlefile.html';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    setInterval(()=>{
+      if(state.started && !state.finished) $('#timeStat').textContent = minutes(Date.now()-state.startTime) + 'm';
+    }, 15000);
+
+    render();
+  </script>
+</body>
+</html>

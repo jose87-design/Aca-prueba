@@ -1,0 +1,22 @@
+name: Chispa web review
+on:
+  pull_request:
+    paths:
+      - 'educando-web/**'
+      - '.github/workflows/chispa-web-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 educando-web/scripts/build.py
+      - run: python3 educando-web/scripts/check.py
+      - run: node --check educando-web/public/assets/site.js
+      - name: Verify generated pages match source
+        run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml

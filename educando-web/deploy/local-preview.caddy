@@ -1,0 +1,6 @@
+# Run from repository folder, only after confirming 8766 is unused.
+http://127.0.0.1:8766 {
+    root * ./public
+    header X-Robots-Tag "noindex, nofollow, noarchive"
+    file_server
+}

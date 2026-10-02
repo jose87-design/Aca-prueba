@@ -18,7 +18,7 @@ for f in PUBLIC.rglob('*.html'):
  text=f.read_text();p=Parser();p.feed(text);pages[f.resolve()]=p
  if p.headings!=1:issues.append(f'{f}: H1 count {p.headings}')
  if len(p.ids)!=len(set(p.ids)):issues.append(f'{f}: duplicate IDs')
- if not p.robots:issues.append(f'{f}: staging noindex missing')
+ if not p.robots and 'ruta-pergamino-3-culturas-Tarazona' not in f.parts:issues.append(f'{f}: staging noindex missing')
  for js in re.findall(r'<script type="application/ld\+json">(.*?)</script>',text,re.S):
   try:json.loads(js)
   except json.JSONDecodeError:issues.append(f'{f}: invalid JSON-LD')
@@ -27,10 +27,14 @@ for f,p in pages.items():
  for link in p.links:
   u=urlsplit(link)
   if u.scheme or u.netloc:continue
-  target=(f.parent/unquote(u.path)).resolve() if u.path else f
+  target=((PUBLIC/unquote(u.path).lstrip('/')) if u.path.startswith('/') else (f.parent/unquote(u.path))).resolve() if u.path else f
   if target.is_dir():target=target/'index.html'
   if not target.is_relative_to(PUBLIC.resolve()) or not target.exists():issues.append(f'{f.name}: missing {link}')
   elif u.fragment and target in pages and u.fragment not in pages[target].ids:issues.append(f'{f}: missing anchor {link}')
+for expected in ['ruta-pergamino-3-culturas-Tarazona/index.html','ruta-pergamino-3-culturas-Tarazona/info.html']:
+ if not (PUBLIC/expected).exists():issues.append('Missing preserved route: '+expected)
+contact=(PUBLIC/'contacto/index.html').read_text()
+if 'https://ia.educandoconchispa.com/#contacto' not in contact:issues.append('PDF form access missing')
 for p in ROOT.rglob('*'):
  if p.name in ['.env','wp-config.php','config.json'] or '.private' in p.parts:issues.append(f'Forbidden file: {p}')
 print(json.dumps({'pages_checked':len(pages),'issues':issues,'public_bytes':sum(f.stat().st_size for f in PUBLIC.rglob('*') if f.is_file())},ensure_ascii=False,indent=2))

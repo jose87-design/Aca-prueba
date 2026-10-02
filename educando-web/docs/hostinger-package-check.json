@@ -2,10 +2,8 @@
   "production": false,
   "legacy_source_sha256": {
     "ruta-pergamino-3-culturas-Tarazona/index.html": "20d1109e6dcb02bb6402765f728d369d17609647edb82b3739ebf51a06b44a9d",
-    "ruta-pergamino-3-culturas-Tarazona/info.html": "d987c8dd13b924ae1e87367a4d3d6b3ef6d87b0403ac0c743640e57a36575c4f",
-    "logo.svg": "b29e6b5ee325d2f616df0bf84879abd83a656d2ca21a94e4c58441491df91b1e",
-    "favicon.svg": "636a96f68890220f33d1fc4911295578b4c77d5b6153c5adea74116b2d867dfe"
+    "ruta-pergamino-3-culturas-Tarazona/info.html": "d987c8dd13b924ae1e87367a4d3d6b3ef6d87b0403ac0c743640e57a36575c4f"
   },
-  "files": 23,
-  "zip_bytes": 374603
+  "zip_sha256": "e1ec64941c6d1e8326412154736f4dc8f7998706888f7da5ca8099b9ef2ad093",
+  "zip_bytes": 374584
 }

@@ -17,6 +17,9 @@ jobs:
           python-version: '3.12'
       - run: python3 educando-web/scripts/build.py
       - run: python3 educando-web/scripts/check.py
+      - run: python3 -m unittest discover -s educando-web/tests -v
+      - run: node --test educando-web/tests/lead-magnet.test.cjs
+      - run: python3 educando-web/scripts/package_hostinger.py
       - run: node --check educando-web/public/assets/site.js
       - name: Verify generated pages match source
-        run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml
+        run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml educando-web/deploy/Hostinger_Web_Prueba.zip educando-web/docs/hostinger-package-check.json

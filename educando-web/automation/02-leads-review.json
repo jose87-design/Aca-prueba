@@ -1,0 +1,74 @@
+{
+  "name": "02-leads-review · validar sin enviar",
+  "active": false,
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Prueba manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "sample",
+      "name": "Consulta ficticia",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{request_id:'LOCAL-TEST-001',name:'Prueba local',email:'example@example.invalid',segment:'empresa',message:'Consulta ficticia, sin envío',privacy_notice_accepted:true,marketing_opt_in:false}}];"
+      }
+    },
+    {
+      "id": "validate",
+      "name": "Validar sin guardar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().map(({json:x})=>{const errors=[];const segment=['docente','centro','empresa','fpe','territorio','otro'].includes(x.segment)?x.segment:'otro';if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(String(x.email||'')))errors.push('email');if(!x.request_id)errors.push('request_id');if(x.privacy_notice_accepted!==true)errors.push('privacy_notice');if(String(x.message||'').length>1800)errors.push('message_length');return {json:{request_id:String(x.request_id||'').slice(0,100),valid:errors.length===0,errors,segment,marketing_opt_in:x.marketing_opt_in===true,stored:false,notification_sent:false,mode:'validation_only'}};});"
+      }
+    }
+  ],
+  "connections": {
+    "Prueba manual": {
+      "main": [
+        [
+          {
+            "node": "Consulta ficticia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consulta ficticia": {
+      "main": [
+        [
+          {
+            "node": "Validar sin guardar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Madrid",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all"
+  },
+  "tags": []
+}

@@ -1,0 +1,20 @@
+const test=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+const source=fs.readFileSync(path.join(__dirname,'../backend/apps-script/LeadMagnet.gs'),'utf8');
+function setup(options={}){
+ const rows=[['Fecha','Nombre','Email','Telefono','Perfil','Mensaje','Consentimiento','Estado','Fecha_envio']];
+ const props={SHEET_ID:'fake-sheet',PDF_FILE_ID:'fake-pdf',OWNER_EMAIL:'owner@example.test',DRY_RUN:'false',...options.props};
+ const calls={mail:[],sheet:0,locked:0,released:0};
+ const sheet={getLastRow:()=>rows.length,getMaxColumns:()=>9,appendRow:r=>rows.push(r),getRange:(r,c,n=1,m=1)=>({getValues:()=>rows.slice(r-1,r-1+n).map(x=>x.slice(c-1,c-1+m)),setNote:()=>{},setValue:v=>{rows[r-1][c-1]=v;},setValues:vs=>{if(options.persistFail)throw Error('fake write failed');vs.forEach((v,i)=>v.forEach((x,j)=>rows[r-1+i][c-1+j]=x));}})};
+ const ctx={console:{error:()=>{}},PropertiesService:{getScriptProperties:()=>({getProperty:k=>props[k],setProperties:v=>Object.assign(props,v)})},ContentService:{MimeType:{JSON:'json'},createTextOutput:s=>({setMimeType:()=>JSON.parse(s)})},LockService:{getScriptLock:()=>({tryLock:()=>{calls.locked++;return !options.busy;},releaseLock:()=>calls.released++})},SpreadsheetApp:{openById:()=>{calls.sheet++;return {getSheetByName:()=>sheet};},flush:()=>{}},DriveApp:{getFileById:()=>({getMimeType:()=>options.badPdf?'text/plain':'application/pdf',getBlob:()=>({getBytes:()=>[1,2,3]})})},MailApp:{getRemainingDailyQuota:()=>options.quota??100,sendEmail:m=>{calls.mail.push(m);if(options.sendFail&&m.to!=='owner@example.test')throw Error('fake send failed');if(options.noticeFail&&m.to==='owner@example.test')throw Error('fake notice failed');}}};
+ vm.createContext(ctx);vm.runInContext(source,ctx);
+ const post=(data={})=>ctx.doPost({postData:{contents:JSON.stringify({nombre:'Ana',email:'ana@example.test',consentimiento:true,...data})}});
+ return {post,rows,calls,props};
+}
+test('strict consent and honeypot reject before Sheets or mail',()=>{for(const data of [{consentimiento:false},{consentimiento:'true'},{company:'bot'}]){const s=setup();assert.equal(s.post(data).status,'error');assert.equal(s.calls.sheet,0);assert.equal(s.calls.mail.length,0);}});
+test('dry run never writes or sends',()=>{const s=setup({props:{DRY_RUN:'true'}});assert.equal(s.post().status,'validated');assert.equal(s.calls.sheet,0);assert.equal(s.calls.mail.length,0);});
+test('send accepted, nine columns, safe HTML and Sheets values',()=>{const s=setup();assert.equal(s.post({nombre:'<img src=x>',mensaje:'=IMPORTXML("x")',telefono:'+34600000000'}).code,'MAIL_ACCEPTED');assert.equal(s.rows[1].length,9);assert.equal(s.rows[1][7],'ACEPTADO_ENVIO');assert.equal(s.rows[1][5][0],"'");assert.match(s.calls.mail[0].htmlBody,/&lt;img/);assert.equal(s.calls.released,1);});
+test('failed send requires review and retry cannot resend',()=>{const s=setup({sendFail:true});assert.equal(s.post().code,'SEND_REVIEW_REQUIRED');assert.equal(s.rows[1][7],'REVISION_ENVIO');assert.equal(s.post().code,'review_required');assert.equal(s.calls.mail.length,1);});
+test('failed post-send persistence prevents automatic duplicate',()=>{const s=setup({persistFail:true});assert.equal(s.post().code,'SEND_ACCEPTED_PERSISTENCE_FAILED');assert.equal(s.rows[1][7],'ENVIANDO');assert.equal(s.post().code,'review_required');assert.equal(s.calls.mail.length,1);});
+test('owner notification failure does not reverse accepted PDF',()=>{const s=setup({noticeFail:true});assert.equal(s.post({telefono:'123'}).status,'success');assert.equal(s.rows[1][7],'ACEPTADO_ENVIO');});
+test('quota and busy lock do not send',()=>{for(const o of [{quota:0},{busy:true}]){const s=setup(o);assert.equal(s.post().status,'error');assert.equal(s.calls.mail.length,0);assert.equal(s.rows.length,1);}});
+test('legacy ENVIADO does not automatically resend',()=>{const s=setup();s.rows.push(['','Ana','ana@example.test','','','','Sí','ENVIADO','']);assert.equal(s.post().code,'already_processed');assert.equal(s.calls.mail.length,0);});

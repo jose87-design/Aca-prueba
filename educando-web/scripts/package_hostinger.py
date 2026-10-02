@@ -24,6 +24,8 @@ def package(production=False,htaccess=None):
   if f.is_file() and (any(p.startswith('.') for p in f.relative_to(src).parts) or f.name.lower() in ['wp-config.php','config.json'] or f.suffix.lower() in ['.sql','.zip','.gz','.bak','.env']):raise ValueError('Archivo no público: '+str(f))
  out=ROOT/'deploy'/('hostinger-production-overlay' if production else 'hostinger-overlay')
  shutil.rmtree(out,ignore_errors=True);shutil.copytree(src,out)
+ rules=ROOT/'deploy'/('hostinger-production.htaccess' if production else 'hostinger-stage.htaccess')
+ (out/'.htaccess').write_bytes(rules.read_bytes())
  for f in out.rglob('*.html'):f.write_text(indexed_html(f.read_text(),production))
  if production:
   (out/'sitemap.xml').write_bytes((ROOT/'docs/sitemap.production-candidate.xml').read_bytes())

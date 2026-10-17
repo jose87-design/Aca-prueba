@@ -710,6 +710,7 @@ const UI = {
       <details class="privacy-details"><summary>Ver privacidad y preferencias</summary><div class="privacy-detail-body">
       <p>Los eventos del piloto usan identificadores aleatorios de sesión y visita, sin nombre, email ni teléfono. Puedes retirar esta autorización para los próximos eventos.</p>
       <p><button class="btn-secondary" type="button" onclick="rejectAnalytics()">Desactivar estadísticas técnicas</button></p></div></details>`,
+    privacyPanelUnavailable:`<p class="privacy-small"><strong>El progreso se guarda localmente</strong> en este navegador. Las estadísticas técnicas no están activas en este entorno, por lo que no se envía analítica.</p>`,
     anonymousInfo:`<strong>Datos mínimos del piloto:</strong> no pedimos nombre, email ni teléfono. Puedes indicar, si quieres, el tipo y tamaño aproximado del grupo.
       <div class="anonymous-controls">
         <select id="groupType" onchange="saveGroupInfo()">
@@ -773,6 +774,7 @@ const UI = {
       <details class="privacy-details"><summary>View privacy and preferences</summary><div class="privacy-detail-body">
       <p>Pilot events use random session and visit identifiers, without name, email or phone number. You can withdraw this permission for future events.</p>
       <p><button class="btn-secondary" type="button" onclick="rejectAnalytics()">Disable technical statistics</button></p></div></details>`,
+    privacyPanelUnavailable:`<p class="privacy-small"><strong>Progress is stored locally</strong> in this browser. Technical statistics are not enabled in this environment, so no analytics is sent.</p>`,
     anonymousInfo:`<strong>Minimal pilot data:</strong> we do not ask for name, email or phone number. Optionally, you can indicate the approximate type and size of your group.
       <div class="anonymous-controls">
         <select id="groupType" onchange="saveGroupInfo()">
@@ -803,6 +805,7 @@ const UI = {
    El navegador llama únicamente al proxy mismo-origen. La URL real del
    receptor se configura fuera de public_html y nunca se publica aquí. */
 const ANALYTICS_ENDPOINT = "/api/route-event.php";
+let ANALYTICS_AVAILABLE = false;
 const ROUTE_ID = "ruta_pergamino_tarazona";
 const ROUTE_VERSION = "pergamino-v2-produccion";
 const APP_VERSION = "2026-05-v2";
@@ -823,10 +826,21 @@ function updatePrivacyUI() {
   const panel = document.getElementById("privacyStartPanel");
   const accepted = hasAnalyticsConsent();
   if (panel) {
-    panel.innerHTML = accepted ? u.privacyPanelAccepted : u.privacyPanel;
-    panel.classList.toggle("accepted", accepted);
+    panel.innerHTML = !ANALYTICS_AVAILABLE ? u.privacyPanelUnavailable : (accepted ? u.privacyPanelAccepted : u.privacyPanel);
+    panel.classList.toggle("accepted", ANALYTICS_AVAILABLE && accepted);
     panel.style.display = "block";
   }
+}
+async function refreshAnalyticsAvailability() {
+  try {
+    const response = await fetch(ANALYTICS_ENDPOINT, {method:"GET",headers:{"Accept":"application/json"},cache:"no-store"});
+    const data = await response.json().catch(()=>({}));
+    ANALYTICS_AVAILABLE = response.ok && data.status === "ready";
+  } catch {
+    ANALYTICS_AVAILABLE = false;
+  }
+  updatePrivacyUI();
+  if (ANALYTICS_AVAILABLE && hasAnalyticsConsent()) trackEvent("page_view", {source:"availability_check"});
 }
 function showPrivacyNotice() {
   updatePrivacyUI();
@@ -837,6 +851,7 @@ function showPrivacyNotice() {
   window.setTimeout(() => panel.classList.remove("required"), 450);
 }
 function acceptAnalytics() {
+  if (!ANALYTICS_AVAILABLE) return;
   localStorage.setItem(ANALYTICS_CONSENT_KEY, ANALYTICS_CONSENT_VERSION);
   updatePrivacyUI();
   trackEvent("analytics_consent", { source: "privacy_panel" });
@@ -961,7 +976,7 @@ function getCompletedCount() {
   return stops().filter(s => STATE.feedback[s.id]?.ok).length;
 }
 function trackEvent(eventType, extra = {}) {
-  if (!hasAnalyticsConsent()) return;
+  if (!ANALYTICS_AVAILABLE || !hasAnalyticsConsent()) return;
   if (!ANALYTICS_ENDPOINT || ANALYTICS_ENDPOINT.includes("PEGAR_AQUI")) return;
   const now = new Date();
   const group = getGroupInfo();
@@ -1262,7 +1277,7 @@ document.documentElement.lang = STATE.lang;
 applyUI();
 render();
 restoreGroupInfo();
-trackEvent("page_view");
+refreshAnalyticsAvailability();
 </script>
 </body>
 </html>

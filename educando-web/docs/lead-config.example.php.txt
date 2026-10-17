@@ -4,5 +4,7 @@
 return [
     'upstream' => 'https://script.google.com/macros/s/REEMPLAZAR/exec',
     'ingress_token' => 'GENERAR_UN_TOKEN_ALEATORIO_LARGO',
+    'analytics_upstream' => 'https://script.google.com/macros/s/REEMPLAZAR_ANALITICA/exec',
+    'analytics_max_per_ip_hour' => 180,
     'max_per_ip_hour' => 12,
 ];

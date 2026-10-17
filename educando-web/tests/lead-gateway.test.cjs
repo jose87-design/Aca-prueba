@@ -17,3 +17,5 @@ test('request id makes retries idempotent',()=>{const s=setup();assert.equal(s.p
 test('spreadsheet formulas are neutralised',()=>{const s=setup();s.post({nombre:'=IMPORTXML("x")',mensaje:'+cmd'});assert.equal(s.rows[1][2][0],"'");assert.equal(s.rows[1][7][0],"'");});
 
 test('rejects direct calls without server ingress token',()=>{const s=setup();const r=s.post({ingress_token:''});assert.equal(r.status,'error');assert.equal(s.rows.length,0);assert.equal(s.calls.mail.length,0);});
+
+test('duplicate retry does not consume another hourly slot',()=>{const s=setup();const first=s.post({request_id:'retry-safe-123'});assert.equal(first.status,'success');const before=s.props.LEAD_ATTEMPTS;const second=s.post({request_id:'retry-safe-123'});assert.equal(second.code,'duplicate_request');assert.equal(s.props.LEAD_ATTEMPTS,before);assert.equal(s.rows.length,2);});

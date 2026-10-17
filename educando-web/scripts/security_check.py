@@ -22,6 +22,16 @@ for p in ROOT.rglob('*'):
 for p in ROOT.rglob('*'):
  if p.is_file() and (p.name in {'.env','.env.local','.env.production'} or p.suffix.lower() in {'.pem','.key','.p12','.pfx'}):
   issues.append(f'{p.relative_to(ROOT)}: sensitive filename must not be tracked')
+autoload=[
+ re.compile(r'<script[^>]+src=["\']https?://',re.I),
+ re.compile(r'<link[^>]+rel=["\']stylesheet["\'][^>]+href=["\']https?://',re.I),
+ re.compile(r'<(?:img|iframe|source)[^>]+src=["\']https?://',re.I),
+ re.compile(r'url\(\s*["\']?https?://',re.I),
+]
+for p in PUBLIC.rglob('*'):
+ if not p.is_file() or p.suffix.lower() not in {'.html','.css','.js'}: continue
+ text=p.read_text(errors='ignore')
+ if any(rx.search(text) for rx in autoload):issues.append(f'{p.relative_to(ROOT)}: third_party_autoload')
 cfg=(PUBLIC/'assets/lead-config.js').read_text()
 if 'endpoint: "/api/lead.php"' not in cfg:issues.append('lead-config.js must use same-origin /api/lead.php')
 site=(PUBLIC/'assets/site.js').read_text()

@@ -13,16 +13,13 @@
   <meta property="og:locale" content="es_ES" />
   <meta property="og:locale:alternate" content="en_GB" />
   <meta name="twitter:card" content="summary" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet" />
   <style>
     /* ── RESET ── */
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { margin: 0; background: #0d0a07; font-family: 'DM Sans', sans-serif; color: #eadfc4; padding-bottom: 74px; }
+    body { margin: 0; background: #0d0a07; font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color: #eadfc4; padding-bottom: 74px; }
     a { text-decoration: none; }
-    button, input { font-family: 'DM Sans', sans-serif; cursor: pointer; }
+    button, input { font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; cursor: pointer; }
     input:focus { outline: 2px solid rgba(245,158,11,.45); outline-offset: 0; }
 
     /* ── ANIMACIONES ── */
@@ -57,7 +54,7 @@
       display: flex; align-items: center; flex-wrap: wrap;
     }
     .topbar-brand { flex: 0 0 auto; }
-    .brand { font-family: 'Playfair Display', serif; font-size: .92rem; font-weight: 900; color: #f6ebd2; }
+    .brand { font-family: Georgia,'Times New Roman',serif; font-size: .92rem; font-weight: 900; color: #f6ebd2; }
     .brand-sub { font-size: .65rem; color: #b89d71; margin-top: 1px; }
     .topbar-progress { flex: 1 1 140px; min-width: 0; }
     .progress-track {
@@ -108,7 +105,7 @@
       color: #f0bf63; font-weight: 700; font-size: .76rem; margin-bottom: 14px;
     }
     h1 {
-      font-family: 'Playfair Display', serif;
+      font-family: Georgia,'Times New Roman',serif;
       font-size: clamp(1.55rem,3.4vw,3.15rem);
       line-height: 1.07; margin: 0 0 12px; color: #fff4de;
     }
@@ -134,7 +131,7 @@
     .btn-secondary:hover { background: rgba(255,255,255,.07); }
 
     .story-card { border: 1px solid rgba(245,158,11,.16); border-radius: 18px; padding: 18px; background: rgba(255,255,255,.03); }
-    .story-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: #f4c970; margin-bottom: 10px; }
+    .story-title { font-family: Georgia,'Times New Roman',serif; font-size: 1.05rem; color: #f4c970; margin-bottom: 10px; }
     .story-text { color: #d7c4a2; line-height: 1.65; margin: 0 0 10px; font-size: .86rem; }
     .story-mini {
       border-radius: 13px; background: rgba(245,158,11,.06);
@@ -145,7 +142,7 @@
     /* ── NAV CHIPS ── */
     #route-intro { padding: 16px 0 0; }
     .container { max-width: 1180px; margin: 0 auto; padding: 0 24px 52px; }
-    h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,2.6vw,2.3rem); margin: 0 0 10px; color: #fff1d4; }
+    h2 { font-family: Georgia,'Times New Roman',serif; font-size: clamp(1.6rem,2.6vw,2.3rem); margin: 0 0 10px; color: #fff1d4; }
     .section-text { color: #ccb892; line-height: 1.75; margin: 0; font-size: .93rem; }
     .map-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
     .map-chip {
@@ -183,7 +180,7 @@
     .card-image > div,
     .card-image .stamp { position: relative; z-index: 1; }
     .card-icon  { font-size: 1.95rem; margin-bottom: 6px; }
-    .card-title { font-family: 'Playfair Display', serif; font-size: 1.16rem; line-height: 1.18; max-width: 92%; margin: 0; color: #fff2dc; }
+    .card-title { font-family: Georgia,'Times New Roman',serif; font-size: 1.16rem; line-height: 1.18; max-width: 92%; margin: 0; color: #fff2dc; }
     .stamp {
       display: none; position: absolute; top: 50%; left: 50%;
       transform: translate(-50%,-50%) rotate(-8deg);
@@ -249,7 +246,7 @@
     }
     .final-eyebrow { color: #f4c970; font-weight: 800; text-transform: uppercase; font-size: .77rem; letter-spacing: .08em; margin-bottom: 10px; }
     .final-side { border-radius: 20px; padding: 18px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.08); }
-    .final-block-title { font-family: 'Playfair Display', serif; font-size: 1.12rem; color: #fff2d8; margin-bottom: 12px; }
+    .final-block-title { font-family: Georgia,'Times New Roman',serif; font-size: 1.12rem; color: #fff2d8; margin-bottom: 12px; }
     .final-list { margin: 0; padding-left: 18px; color: #d5c39f; line-height: 1.8; font-size: .88rem; }
     .token-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
     .token { padding: 7px 12px; border-radius: 999px; border: 1px solid rgba(255,255,255,.09); color: #e8d5af; font-size: .79rem; }
@@ -303,7 +300,7 @@
     .anonymous-controls select {
       flex: 1 1 132px; background: rgba(255,255,255,.045); color: #f6ebd2;
       border: 1px solid rgba(245,158,11,.24); border-radius: 10px;
-      padding: 9px 10px; font-size: 1rem; font-family: 'DM Sans', sans-serif;
+      padding: 9px 10px; font-size: 1rem; font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     }
     .anonymous-controls option { color: #111; }
     .privacy-note { color: #b89d71; font-size: .78rem; line-height: 1.55; margin: 9px 0 0; }

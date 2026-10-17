@@ -25,6 +25,9 @@ for forbidden in ['ANALYTICS_ANALYTICS','hasPrivacyConsent','script.google.com/m
 
 if len(text) < 180000:
     issues.append('route unexpectedly truncated')
+for stop_id in range(1,7):
+    if text.count(f'{{ id:{stop_id},') < 2:
+        issues.append(f'bilingual route stop {stop_id} missing')
 if text.count('<script>') != 1 or text.count('</script>') != 1:
     issues.append('expected exactly one inline script')
 

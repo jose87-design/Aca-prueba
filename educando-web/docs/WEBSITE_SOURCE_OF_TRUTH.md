@@ -31,7 +31,8 @@ Formación docente y de equipos; diagnóstico; mejora de procesos; automatizaci�
 - UNAD 24/09/2026: verificar realización y disponer de material publicable.
 - Cámara de Comercio: fecha y situación actual.
 - Credenciales: verificar nombre, emisor y acreditación antes de crear un listado nuevo. El perfil actual contiene certificaciones y cargos con datos a contrastar.
-- +8.000 horas y fechas de jefatura: contrastar documentación y discrepancias del contexto antes de reutilizar.
+- +8.000 horas de formación: confirmado por el titular como dato real y certificado. Se puede publicar como «+8.000 horas de formación certificada». Conservar la documentación acreditativa fuera del repositorio público.
+- Fechas de jefatura: contrastar documentación antes de reutilizar.
 - -40 % de corrección y 4,3 s de generación: requieren evidencia; omitidos de esta versión.
 - Casos de empresas: autorización y hechos publicables; no se anuncian clientes nuevos.
 

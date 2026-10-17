@@ -88,7 +88,7 @@ for path,d in PAGES.items():
 (OUT/'404.html').write_text((OUT/'404/index.html').read_text().replace('../','./'))
 (OUT/'robots.txt').write_text('User-agent: *\nDisallow: /\n')
 # Candidate sitemap is documentation only: not served from staging.
-(ROOT/'docs/sitemap.production-candidate.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>https://educandoconchispa.com{p}</loc></url>\n' for p in PAGES if p!='/404/')+'</urlset>\n')
+(ROOT/'docs/sitemap.production-candidate.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>https://educandoconchispa.com{p}</loc></url>\n' for p in PAGES if p not in {'/404/','/privacidad/','/aviso-legal/'})+'</urlset>\n')
 
 # V4 conversion layer. Keep generated public HTML reproducible from this source.
 def patch_page(route, fn):

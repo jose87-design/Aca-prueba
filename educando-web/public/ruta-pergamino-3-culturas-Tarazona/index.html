@@ -500,8 +500,311 @@
 </footer>
 
 <script>
-/* Analítica opcional del piloto. El navegador usa sólo el proxy mismo-origen;
-   la URL real del receptor se mantiene fuera de public_html. */
+/* ════════════════════════════════════
+   STOPS DATA — BILINGUAL
+════════════════════════════════════ */
+function makeSvg(title, icon, from, to, sub) {
+  // Fondo decorativo sin textos ni iconos para evitar duplicidades visuales en las tarjetas.
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="${from}"/>
+        <stop offset="100%" stop-color="${to}"/>
+      </linearGradient>
+      <radialGradient id="glow" cx="28%" cy="22%" r="70%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.16)"/>
+        <stop offset="55%" stop-color="rgba(255,255,255,0.04)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+      <filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="2" stitchTiles="stitch"/>
+        <feColorMatrix type="saturate" values="0"/>
+        <feComponentTransfer><feFuncA type="table" tableValues="0 0 0.025 0.045"/></feComponentTransfer>
+      </filter>
+    </defs>
+    <rect width="1200" height="500" fill="url(#g)"/>
+    <rect width="1200" height="500" fill="url(#glow)"/>
+    <rect width="1200" height="500" filter="url(#n)" opacity="0.45"/>
+    <circle cx="160" cy="105" r="120" fill="rgba(255,255,255,0.055)"/>
+    <circle cx="1035" cy="395" r="170" fill="rgba(255,255,255,0.05)"/>
+    <path d="M0 360 C180 310,320 410,520 360 S920 300,1200 360 L1200 500 L0 500 Z" fill="rgba(0,0,0,0.22)"/>
+  </svg>`;
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
+const STOPS = {
+  es: [
+    { id:1, icon:"🏛️", name:"Ayuntamiento · Plaza de España", tag:"Parada 1 · El umbral del tiempo",
+      image: makeSvg("Ayuntamiento de Tarazona","🏛️","#3b2411","#8a5a18","Ruta histórica · Tarazona"),
+      accent:"#f59e0b", time:"8 min",
+      curiosity:"Este imponente edificio fue construido en el siglo XVI apoyándose sobre la antigua muralla medieval. Sirvió originalmente como lonja y granero público antes de convertirse en sede del gobierno municipal.",
+      mission:"Sitúate frente a su espectacular fachada renacentista y observa con atención la banda horizontal que la recorre. Está decorada con relieves de la cabalgata imperial. ¿Qué palabra de cinco letras define esta franja decorativa?",
+      placeholder:"Elemento decorativo…", answer:"friso",
+      hint1:"Es una banda horizontal que recorre la fachada, decorada con una escena de cabalgata imperial.",
+      hint2:"Empieza por fr- y termina en -so.",
+      success:"Exacto. El friso de la fachada es uno de los testimonios más elocuentes del poder renacentista en Tarazona. Primera chispa encendida.",
+      maps:"https://www.google.com/maps/search/Plaza+de+Espa%C3%B1a+Tarazona+Zaragoza", mapsLabel:"📍 Abrir en Google Maps" },
+
+    { id:2, icon:"🕍", name:"Judería · Rúa Alta de Bécquer", tag:"Parada 2 · El banquero del rey",
+      image: makeSvg("Judería de Tarazona","🕍","#1d1738","#5140a3","Ruta histórica · Tarazona"),
+      accent:"#8b5cf6", time:"10 min",
+      curiosity:"Este barrio fue hogar de Moshé de Portella, un judío tan poderoso que llegó a ser administrador de los ingresos de la Corona con el rey Pedro III. La judería conserva su cerrado y sinuoso trazado medieval, con la Rúa Alta como eje central.",
+      mission:"Camina por la Rúa Alta y busca en el suelo una placa metálica con el mapa de la península ibérica en caracteres hebreos (Caminos de Sefarad). La judería se asienta al abrigo de una antigua fortaleza musulmana. ¿Con qué nombre de cuatro letras se conocía esa fortaleza?",
+      placeholder:"Nombre de la fortaleza…", answer:"zuda",
+      hint1:"Es el nombre árabe de las alcazabas o fortalezas palatinas en Al-Ándalus.",
+      hint2:"Empieza por Z y tiene cuatro letras.",
+      success:"Correcto. La Zuda fue la fortaleza musulmana sobre la que se levantó todo el poder episcopal y real de Tarazona. Segunda chispa.",
+      maps:"https://www.google.com/maps/search/Jude%C3%ADa+Tarazona+Zaragoza", mapsLabel:"📍 Abrir en Google Maps" },
+
+    { id:3, icon:"🌉", name:"Casas Colgadas · Calle Judería", tag:"Parada 3 · El abismo suspendido",
+      image: makeSvg("Casas Colgadas","🌉","#0f2a2b","#1e7a70","Ruta histórica · Tarazona"),
+      accent:"#14b8a6", time:"8 min",
+      curiosity:"Estas casas tenían entrada por la calle del Conde, vinculada a linajes nobles cristianos como los Muñoz Pueyo (cuyo escudo se encuentra junto al Arco de las Cadenas) o el Conde de Villaoquina. Sin embargo, sus fachadas voladas se observan desde la calle Judería: justo ahí se entiende mejor el diálogo entre la nobleza cristiana, el trazado judío y la ciudad medieval.",
+      mission:"Desde la calle Judería, observa cómo estas casas sobresalen de la pared hacia el vacío para ganar espacio. Esta técnica tiene un nombre técnico de ocho letras: una parte de la estructura que vuela más allá del muro que la sustenta. ¿Cuál es?",
+      placeholder:"Término arquitectónico…", answer:"saledizo",
+      hint1:"Es la parte de un edificio que sobresale o 'sale' de la línea del muro principal.",
+      hint2:"Empieza por sale- y termina en -dizo.",
+      success:"Perfecto. El saledizo convierte estas casas, vistas desde la calle Judería, en uno de los paisajes urbanos más dramáticos de Aragón. Tercera chispa encendida.",
+      maps:"https://www.google.com/maps/search/Calle+Juder%C3%ADa+Casas+Colgadas+Tarazona+Zaragoza", mapsLabel:"📍 Abrir en Google Maps" },
+
+    { id:4, icon:"🏰", name:"Palacio Episcopal · Arco de Lizares", tag:"Parada 4 · El guardián del paso",
+      image: makeSvg("Palacio Episcopal","🏰","#15102a","#4a3080","Ruta histórica · Tarazona"),
+      accent:"#a78bfa", time:"10 min",
+      curiosity:"Sobre las defensas de la antigua Zuda musulmana se levantó esta residencia de los reyes de Aragón, que fue sumando edificaciones medievales y renacentistas hasta convertirse en sede episcopal. Desde aquí se domina toda la ciudad.",
+      mission:"Sitúate en la plaza donde confluyen el Palacio Episcopal y la iglesia de la Magdalena. El arco de esta zona no es el Arco de las Cadenas, ese corresponde a la calle del Conde, sino otro paso histórico. ¿Qué nombre de siete letras recibe este arco?",
+      placeholder:"Nombre del arco…", answer:"lizares",
+      hint1:"No busques el arco de las Cadenas: aquí estás en el entorno del Palacio Episcopal y la Magdalena.",
+      hint2:"Empieza por Li- y termina en -res.",
+      success:"Bien visto. El Arco de Lizares marca uno de los pasos históricos del entorno del Palacio Episcopal y la Magdalena. Cuarta chispa.",
+      maps:"https://www.google.com/maps/search/Arco+de+Lizares+Tarazona+Zaragoza", mapsLabel:"📍 Abrir en Google Maps" },
+
+    { id:5, icon:"⭕", name:"Plaza de Toros Vieja", tag:"Parada 5 · La ilusión geométrica",
+      image: makeSvg("Plaza de Toros Vieja","⭕","#3a1212","#9f3c24","Ruta histórica · Tarazona"),
+      accent:"#ef4444", time:"10 min",
+      curiosity:"Construida en el siglo XVIII, es uno de los pocos recintos taurinos de España que integra viviendas en su perímetro. Tradicionalmente se habla de 32 casas formando sus paredes. A simple vista parece redonda, pero no lo es.",
+      mission:"Rodéala e inspecciona sus muros. No es un círculo. Camina por su perímetro y cuenta los lados. ¿Cuántos lados geométricos exactos tiene esta histórica plaza? Escribe el número en letras.",
+      placeholder:"Número de lados en letras…", answer:"ocho",
+      hint1:"Es una figura de más de seis lados y menos de diez.",
+      hint2:"La figura se llama octógono. ¿Cuántos lados tiene? Escríbelo en letras.",
+      success:"¡Ocho! Has descifrado la ilusión geométrica. Quinta chispa encendida: solo queda el último sello.",
+      maps:"https://www.google.com/maps/search/Plaza+de+Toros+Vieja+Tarazona+Zaragoza", mapsLabel:"📍 Abrir en Google Maps" },
+
+    { id:6, icon:"⛪", name:"Catedral de Santa María", tag:"Parada 6 · La luz del mudéjar",
+      image: makeSvg("Catedral de Santa María","⛪","#35270a","#a87418","Ruta histórica · Tarazona"),
+      accent:"#d97706", time:"12 min",
+      curiosity:"Este templo es un mosaico que abarca desde el primer gótico del siglo XIII hasta el Renacimiento, con la tradición arquitectónica del mudéjar aragonés. Sus celosías producen fascinantes juegos de luces y sombras, tapizando el suelo con paños infinitos.",
+      mission:"Acércate al claustro. Sus celosías filtran lo que entra desde el exterior, creando ese ambiente dorado tan característico. El lema de la ciudad sobre el arte mudéjar dice: 'Donde el mudéjar se hace…'. ¿Qué palabra de tres letras completa la frase?",
+      placeholder:"Completa el lema…", answer:"luz",
+      hint1:"Es lo que atraviesa las celosías y da ese color dorado al interior.",
+      hint2:"Tres letras, empieza por l-.",
+      success:"Sí. 'Donde el mudéjar se hace luz.' Has encendido la última chispa: el pergamino de las tres culturas está completo.",
+      maps:"https://www.google.com/maps/search/Catedral+Santa+Maria+Tarazona+Zaragoza", mapsLabel:"📍 Abrir en Google Maps" }
+  ],
+
+  en: [
+    { id:1, icon:"🏛️", name:"Town Hall · Plaza de España", tag:"Stop 1 · The Gateway in Time",
+      image: makeSvg("Tarazona Town Hall","🏛️","#3b2411","#8a5a18","Historic trail · Tarazona"),
+      accent:"#f59e0b", time:"8 min",
+      curiosity:"This imposing building was constructed in the 16th century against the old medieval city wall. It originally served as a public exchange and granary before becoming the seat of local government. Its Renaissance facade is one of the finest in Aragon.",
+      mission:"Stand before the Renaissance facade and study the long horizontal band running across it. Decorated with reliefs of an imperial cavalcade, this architectural element was a powerful declaration of 16th-century authority. What is the term for this horizontal decorative band?",
+      placeholder:"Architectural term…", answer:"frieze",
+      hint1:"It is a horizontal band running along a wall or facade, decorated with sculpted or painted ornament.",
+      hint2:"Starts with 'fr-' and rhymes with 'knees'.",
+      success:"Correct! The frieze of this facade is one of the most eloquent expressions of Renaissance power in Tarazona. First spark lit.",
+      maps:"https://www.google.com/maps/search/Plaza+de+Espa%C3%B1a+Tarazona+Zaragoza", mapsLabel:"📍 Open in Google Maps" },
+
+    { id:2, icon:"🕍", name:"Jewish Quarter · Rúa Alta", tag:"Stop 2 · The King's Banker",
+      image: makeSvg("Jewish Quarter Tarazona","🕍","#1d1738","#5140a3","Historic trail · Tarazona"),
+      accent:"#8b5cf6", time:"10 min",
+      curiosity:"This neighbourhood was home to Moshé de Portella, a Jewish financier so powerful he became administrator of the Crown's revenues under King Peter III. The quarter preserves its winding medieval layout, with Rúa Alta as its central artery.",
+      mission:"Walk along Rúa Alta and look for a metal plaque on the ground showing the Iberian Peninsula in Hebrew characters (Caminos de Sefarad). The Jewish quarter was built sheltered by an ancient Muslim fortress. What is the 4-letter Arabic name still used for that type of palatial fortress?",
+      placeholder:"Arabic fortress name…", answer:"zuda",
+      hint1:"In Al-Andalus, this Arabic word referred to a palatial fortress or alcazaba belonging to the ruler.",
+      hint2:"Starts with Z and has four letters.",
+      success:"Correct. The Zuda was the Muslim fortress on whose foundations the entire episcopal and royal power of Tarazona was built. Second spark.",
+      maps:"https://www.google.com/maps/search/Jude%C3%ADa+Tarazona+Zaragoza", mapsLabel:"📍 Open in Google Maps" },
+
+    { id:3, icon:"🌉", name:"Hanging Houses · Calle Judería", tag:"Stop 3 · The Suspended Abyss",
+      image: makeSvg("Hanging Houses Tarazona","🌉","#0f2a2b","#1e7a70","Historic trail · Tarazona"),
+      accent:"#14b8a6", time:"8 min",
+      curiosity:"These houses were entered from Calle del Conde, an area linked to Christian noble families such as the Muñoz Pueyo family (whose coat of arms is beside the Arco de las Cadenas) or the Count of Villaoquina. Yet their projecting facades are best seen from Calle Judería, where the Christian nobility, the Jewish quarter and the medieval city meet in the same view.",
+      mission:"From Calle Judería, look carefully at how these houses extend beyond the wall and seem to hover over the void. This technique (where an upper floor projects outward beyond the lower floor) has a specific name used in medieval European timber-framed buildings. What is it?",
+      placeholder:"Architectural term…", answer:"jetty",
+      hint1:"This technique was common in medieval buildings across Europe. The upper storey extends beyond the storey below.",
+      hint2:"It is also a word for a small pier projecting into water. Five letters.",
+      success:"Exactly. The jettied construction gives these houses their dramatic silhouette when seen from Calle Judería. Third spark lit.",
+      maps:"https://www.google.com/maps/search/Calle+Juder%C3%ADa+Casas+Colgadas+Tarazona+Zaragoza", mapsLabel:"📍 Open in Google Maps" },
+
+    { id:4, icon:"🏰", name:"Episcopal Palace · Arco de Lizares", tag:"Stop 4 · Guardian of the Passage",
+      image: makeSvg("Episcopal Palace Tarazona","🏰","#15102a","#4a3080","Historic trail · Tarazona"),
+      accent:"#a78bfa", time:"10 min",
+      curiosity:"Built over the remains of the old Muslim Zuda fortress, this palace served as the residence of the Kings of Aragon before becoming the Bishop's seat. Layers of medieval and Renaissance construction accumulated over centuries, and it commands sweeping views of the city.",
+      mission:"Find the square where the Episcopal Palace meets the Church of La Magdalena. The arch in this area is not the Arco de las Cadenas, which belongs to Calle del Conde, but another historic passage. What seven-letter name is used for this arch?",
+      placeholder:"Name of the arch…", answer:"lizares",
+      hint1:"Do not look for the Arch of the Chains here: this stop is in the Episcopal Palace and La Magdalena area.",
+      hint2:"It starts with Li- and ends in -res.",
+      success:"Well spotted. The Arco de Lizares marks one of the historic passages around the Episcopal Palace and La Magdalena. Fourth spark.",
+      maps:"https://www.google.com/maps/search/Arco+de+Lizares+Tarazona+Zaragoza", mapsLabel:"📍 Open in Google Maps" },
+
+    { id:5, icon:"⭕", name:"Old Bullring · Plaza de Toros Vieja", tag:"Stop 5 · The Geometric Illusion",
+      image: makeSvg("Old Bullring Tarazona","⭕","#3a1212","#9f3c24","Historic trail · Tarazona"),
+      accent:"#ef4444", time:"10 min",
+      curiosity:"Built in the 18th century, this is one of the very few bullrings in Spain where residential houses are built directly into the perimeter walls — traditionally said to number 32. At first glance it looks circular, but walk around it carefully.",
+      mission:"Walk around the outside of this building and count its sides. Despite appearances, it is not a circle. How many flat sides does this unusual arena have? Write your answer as a word, not a number.",
+      placeholder:"Number of sides (as a word)…", answer:"eight",
+      hint1:"It has more sides than a hexagon but fewer than a decagon.",
+      hint2:"The shape is called an octagon. How many sides does an octagon have? Write it as a word.",
+      success:"Eight! You have solved the geometric illusion. Fifth spark lit: only the final seal remains.",
+      maps:"https://www.google.com/maps/search/Plaza+de+Toros+Vieja+Tarazona+Zaragoza", mapsLabel:"📍 Open in Google Maps" },
+
+    { id:6, icon:"⛪", name:"Cathedral of Santa María", tag:"Stop 6 · Where Mudéjar Becomes Light",
+      image: makeSvg("Cathedral of Santa María","⛪","#35270a","#a87418","Historic trail · Tarazona"),
+      accent:"#d97706", time:"12 min",
+      curiosity:"This cathedral spans from 13th-century Gothic to the Renaissance, woven throughout with the distinctly Aragonese Mudéjar tradition — a style born from the collaboration of Christian, Muslim and Jewish craftsmen. Its latticed screens produce ever-changing plays of light and shadow.",
+      mission:"Step close to the cathedral cloister. Its latticed stone screens filter what enters from outside, filling the interior with a warm golden quality. The city's motto about Mudéjar art reads: 'Where Mudéjar becomes…'. What single word completes the phrase?",
+      placeholder:"Complete the motto…", answer:"light",
+      hint1:"It is what travels through the latticed screens and turns the interior golden.",
+      hint2:"Five letters. The opposite of darkness.",
+      success:"Yes. 'Where Mudéjar becomes light.' Final spark. The Parchment of Three Cultures is complete.",
+      maps:"https://www.google.com/maps/search/Catedral+Santa+Maria+Tarazona+Zaragoza", mapsLabel:"📍 Open in Google Maps" }
+  ]
+};
+
+/* ════════════════════════════════════
+   UI STRINGS
+════════════════════════════════════ */
+const UI = {
+  es: {
+    topbarTitle:"El Pergamino · Tarazona", topbarSub:"Ruta histórica y patrimonial",
+    resetLabel:"↺ Reiniciar", heroBadge:"Tarazona · turismo cultural · patrimonio mudéjar · UNESCO",
+    heroTitle:`Un pergamino de piedra donde tres culturas<br>dejaron su <span class="grad">firma oculta</span>.`,
+    heroLead:"Recorre Tarazona como investigador del pasado. Cada parada esconde un enigma arquitectónico o histórico real. Descífralo todo para revelar el secreto de la ciudad donde convivieron cristianos, judíos y musulmanes.",
+    heroCta:"▶ Iniciar la investigación", heroActive:"Ir a mi enigma activo",
+    storyTitle:"La historia",
+    storyText:"Tarazona es un pergamino de piedra donde los siglos conversan. Tres culturas —cristiana, judía y musulmana— dejaron su firma oculta en cada rincón. Tu misión es recorrer sus calles para descifrar esas chispas del pasado: fragmentos de luz, geometría y secretos arquitectónicos que solo se revelan a quienes saben mirar.",
+    storyHow:"<strong>Cómo se juega:</strong> lee el enigma, observa el lugar, escribe tu respuesta y avanza.",
+    storyBonus:"<strong>Al terminar:</strong> recibirás un prompt de IA para crear tu propio juego histórico sobre Tarazona.",
+    navTitle:"La ruta patrimonial · 6 enigmas",
+    navSub:"Seis paradas reales, seis enigmas documentados. Cada respuesta correcta abre la siguiente puerta.",
+    finalEyebrow:"Investigación completada", finalTitle:"Has descifrado el pergamino",
+    finalDesc:"Has recorrido Tarazona con ojos de investigador: el friso del Ayuntamiento, la Zuda de la judería, los saledizos de las Casas Colgadas, el Arco de Lizares, los ocho lados de la Plaza de Toros y la luz del mudéjar en la Catedral. La ciudad solo habla con quienes saben mirar.",
+    finalPromptLabel:"🤖 Tu bonus de IA:",
+    finalPromptIntro:" Copia este prompt en ChatGPT para seguir jugando con Tarazona:",
+    finalPromptText:'"Crea una nueva ruta gamificada por Tarazona para jugar en familia o con visitantes. Dame dos variantes: 1) una aventura cultural sobre el Cipotegato y las fiestas de Tarazona, y 2) una ruta comercial por tiendas locales. Para cada variante incluye historia inicial, 5 paradas, retos de observación, preguntas sin recopilar datos personales, pistas progresivas y mensaje final. Mantén un tono turístico, respetuoso con la tradición local y apto para público general. (La IA comete errores. No nos hacemos responsables de la exactitud histórica de los resultados generados)"',
+    finalTokens:["Tarazona","mudéjar · UNESCO","tres culturas","patrimonio","judería","arte medieval"],
+    finalList:["Diseño de rutas gamificadas para turismo cultural, patrimonio y comercio local.","Experiencias QR sin registro personal y con estadísticas técnicas de uso.","Actividades para colegios, asociaciones, visitas guiadas y campañas municipales.","Formación práctica en IA para docentes, centros, ayuntamientos y pymes.","Automatización y mejora de procesos con IA para negocios locales.","Proyectos con criterio pedagógico, cuidado cultural y foco en implementación real."],
+    finalCta:"¿Quieres gamificar tu localidad, una ruta comercial o un proyecto cultural? Pulsa el logo de Educando con chIspA y escríbeme.",
+    curiosityLabel:"Curiosidad", missionLabel:"Misión",
+    validateBtn:"Validar respuesta", hintBtn:"Ver pista",
+    h1:"Pista 1:", h2:"Pista 2:",
+    attemptsLabel:"Intentos:", doneLabel:"Superada",
+    stampText:"✓ SUPERADA", lockedNote:"🔒 Completa la parada anterior para desbloquear este enigma.",
+    wrongMsg1:"No coincide. Vuelve a observar el lugar e inténtalo otra vez.",
+    wrongMsg2:"Todavía no. Usa la segunda pista o revisa la curiosidad del lugar.",
+    progress:(c,t,p)=>`${c}/${t} enigmas · ${p}%`,
+    footerTagline:"Una iniciativa turística para el Ayuntamiento de Tarazona · Experiencia gamificada por",
+    privacyHeroCta:"▶ Iniciar la investigación",
+    privacyAcceptedHeroCta:"▶ Iniciar la investigación",
+    privacyPanel:`<p class="privacy-small"><strong>El progreso se guarda localmente</strong> en este navegador para que la ruta funcione. Las estadísticas técnicas del piloto son opcionales.</p>
+      <details class="privacy-details"><summary>Ver privacidad y estadísticas opcionales</summary><div class="privacy-detail-body">
+      <p>La ruta usa almacenamiento local técnico para recordar progreso y respuestas. Si lo autorizas, enviamos además eventos de uso como inicio, avance, pistas y finalización, asociados a identificadores aleatorios de sesión y visita.</p>
+      <ul><li>No pedimos nombre, email ni teléfono para la ruta.</li><li>No envíes datos personales en las respuestas de los enigmas.</li><li>Los identificadores no se usan para publicidad ni seguimiento entre sitios.</li></ul>
+      <p><button class="btn-secondary" type="button" onclick="acceptAnalytics()">Permitir estadísticas técnicas</button></p></div></details>`,
+    privacyPanelAccepted:`<p class="privacy-small">Estadísticas técnicas opcionales activadas. El progreso local funciona independientemente de esta preferencia.</p>
+      <details class="privacy-details"><summary>Ver privacidad y preferencias</summary><div class="privacy-detail-body">
+      <p>Los eventos del piloto usan identificadores aleatorios de sesión y visita, sin nombre, email ni teléfono. Puedes retirar esta autorización para los próximos eventos.</p>
+      <p><button class="btn-secondary" type="button" onclick="rejectAnalytics()">Desactivar estadísticas técnicas</button></p></div></details>`,
+    anonymousInfo:`<strong>Datos mínimos del piloto:</strong> no pedimos nombre, email ni teléfono. Puedes indicar, si quieres, el tipo y tamaño aproximado del grupo.
+      <div class="anonymous-controls">
+        <select id="groupType" onchange="saveGroupInfo()">
+          <option value="">Tipo de grupo</option>
+          <option value="familia">Familia</option>
+          <option value="pareja">Pareja</option>
+          <option value="amistades">Amistades</option>
+          <option value="colegio">Colegio</option>
+          <option value="asociacion">Asociación</option>
+          <option value="individual">Individual</option>
+          <option value="otro">Otro</option>
+        </select>
+        <select id="groupSize" onchange="saveGroupInfo()">
+          <option value="">Nº jugadores</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3-4">3-4</option>
+          <option value="5-8">5-8</option>
+          <option value="9+">9+</option>
+        </select>
+      </div>
+      <p class="privacy-note">Las estadísticas técnicas del piloto sólo se envían si las autorizas. El tipo y tamaño del grupo son opcionales y no se solicita identificación personal.</p>`
+  },
+  en: {
+    topbarTitle:"The Parchment · Tarazona", topbarSub:"Historic heritage trail",
+    resetLabel:"↺ Reset", heroBadge:"Tarazona · cultural tourism · Mudéjar heritage · UNESCO",
+    heroTitle:`A stone parchment where three cultures<br>left their <span class="grad">hidden mark</span>.`,
+    heroLead:"Explore Tarazona as a heritage investigator. Each stop hides a real architectural or historical riddle. Solve them all to uncover the secret of the city where Christians, Jews and Muslims once lived side by side.",
+    heroCta:"▶ Begin the investigation", heroActive:"Jump to my active stop",
+    storyTitle:"The story",
+    storyText:"Tarazona is a stone parchment where the centuries speak. Three cultures — Christian, Jewish and Muslim — left their hidden mark on every corner. Your mission: walk its streets and decipher those sparks of the past. Fragments of light, geometry and architectural secrets that only reveal themselves to those who know how to look.",
+    storyHow:"<strong>How to play:</strong> read the riddle, observe the place, type your answer and advance.",
+    storyBonus:"<strong>At the end:</strong> you will receive an AI prompt to create your own historic game about Tarazona.",
+    navTitle:"The heritage trail · 6 riddles",
+    navSub:"Six real stops, six documented riddles. Each correct answer opens the next door.",
+    finalEyebrow:"Investigation complete", finalTitle:"You have deciphered the parchment",
+    finalDesc:"You explored Tarazona with an investigator's eye: the frieze of the Town Hall, the Zuda of the Jewish Quarter, the jettied Hanging Houses, the Arco de Lizares, the eight sides of the Old Bullring and the light of the Mudéjar Cathedral. The city only speaks to those who know how to look.",
+    finalPromptLabel:"🤖 Your AI bonus:",
+    finalPromptIntro:" Copy this prompt into ChatGPT to keep playing with Tarazona:",
+    finalPromptText:'"Create a new gamified route through Tarazona for families or visitors. Give me two versions: 1) a cultural adventure about the Cipotegato and Tarazona local festivities, and 2) a commercial route through local shops. For each version include an opening story, 5 stops, observation challenges, questions that do not collect personal data, progressive hints and a final message. Keep it tourist-friendly, respectful of local tradition and suitable for a general audience."',
+    finalTokens:["Tarazona","Mudéjar · UNESCO","three cultures","heritage","Jewish quarter","medieval art"],
+    finalList:["Gamified routes for cultural tourism, heritage and local commerce.","QR experiences without personal registration and with technical usage statistics.","Activities for schools, associations, guided visits and municipal campaigns.","Practical AI training for teachers, schools, city councils and SMEs.","AI-supported process improvement and automation for local businesses.","Projects with educational criteria, cultural care and real implementation focus."],
+    finalCta:"Want to gamify your town, a local shopping route or a cultural project? Tap the Educando con chIspA logo and write to me.",
+    curiosityLabel:"Did you know", missionLabel:"Mission",
+    validateBtn:"Submit answer", hintBtn:"Show hint",
+    h1:"Hint 1:", h2:"Hint 2:",
+    attemptsLabel:"Attempts:", doneLabel:"Solved",
+    stampText:"✓ SOLVED", lockedNote:"🔒 Complete the previous stop to unlock this riddle.",
+    wrongMsg1:"Not quite. Look at the building again and try once more.",
+    wrongMsg2:"Still not right. Use the second hint or re-read the fact above.",
+    progress:(c,t,p)=>`${c}/${t} stops · ${p}%`,
+    footerTagline:"A tourism initiative for Tarazona City Council · Gamified experience by",
+    privacyHeroCta:"▶ Begin the investigation",
+    privacyAcceptedHeroCta:"▶ Begin the investigation",
+    privacyPanel:`<p class="privacy-small"><strong>Progress is stored locally</strong> in this browser so the trail can work. Pilot technical statistics are optional.</p>
+      <details class="privacy-details"><summary>View privacy and optional statistics</summary><div class="privacy-detail-body">
+      <p>The trail uses technical local storage to remember progress and answers. If you allow it, we also send usage events such as start, progress, hints and completion, linked to random session and visit identifiers.</p>
+      <ul><li>We do not ask for name, email or phone number for the trail.</li><li>Do not submit personal data in riddle answers.</li><li>The identifiers are not used for advertising or cross-site tracking.</li></ul>
+      <p><button class="btn-secondary" type="button" onclick="acceptAnalytics()">Allow technical statistics</button></p></div></details>`,
+    privacyPanelAccepted:`<p class="privacy-small">Optional technical statistics enabled. Local progress works independently of this preference.</p>
+      <details class="privacy-details"><summary>View privacy and preferences</summary><div class="privacy-detail-body">
+      <p>Pilot events use random session and visit identifiers, without name, email or phone number. You can withdraw this permission for future events.</p>
+      <p><button class="btn-secondary" type="button" onclick="rejectAnalytics()">Disable technical statistics</button></p></div></details>`,
+    anonymousInfo:`<strong>Minimal pilot data:</strong> we do not ask for name, email or phone number. Optionally, you can indicate the approximate type and size of your group.
+      <div class="anonymous-controls">
+        <select id="groupType" onchange="saveGroupInfo()">
+          <option value="">Group type</option>
+          <option value="familia">Family</option>
+          <option value="pareja">Couple</option>
+          <option value="amistades">Friends</option>
+          <option value="colegio">School</option>
+          <option value="asociacion">Association</option>
+          <option value="individual">Individual</option>
+          <option value="otro">Other</option>
+        </select>
+        <select id="groupSize" onchange="saveGroupInfo()">
+          <option value="">Players</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3-4">3-4</option>
+          <option value="5-8">5-8</option>
+          <option value="9+">9+</option>
+        </select>
+      </div>
+      <p class="privacy-note">Pilot technical statistics are sent only if you allow them. Group type and size are optional and no personal identification is requested.</p>`
+  }
+};
+
+
+/* Analítica técnica opcional del piloto.
+   El navegador llama únicamente al proxy mismo-origen. La URL real del
+   receptor se configura fuera de public_html y nunca se publica aquí. */
 const ANALYTICS_ENDPOINT = "/api/route-event.php";
 const ROUTE_ID = "ruta_pergamino_tarazona";
 const ROUTE_VERSION = "pergamino-v2-produccion";
@@ -511,8 +814,8 @@ const VISIT_KEY = "ruta-pergamino-v2-visit-id";
 const START_KEY = "ruta-pergamino-v2-start-time";
 const GROUP_KEY = "ruta-pergamino-v2-group-info";
 const LAST_ACTIVITY_KEY = "ruta-pergamino-v2-last-activity";
-const ANALYTICS_ANALYTICS_CONSENT_KEY = "ruta-pergamino-v2-analytics-consent";
-const ANALYTICS_ANALYTICS_CONSENT_VERSION = "analytics-v1";
+const ANALYTICS_CONSENT_KEY = "ruta-pergamino-v2-analytics-consent";
+const ANALYTICS_CONSENT_VERSION = "analytics-v1";
 const SESSION_TTL_MS = 60 * 60 * 1000; // nueva sesión tras 60 min sin actividad
 
 function hasAnalyticsConsent() {
@@ -613,10 +916,6 @@ function getActiveSeconds() {
   return Math.max(0, Math.round((Date.now() - last) / 1000));
 }
 function startRoute(options = {}) {
-  if (!options.force && !hasAnalyticsConsent()) {
-    showPrivacyNotice();
-    return false;
-  }
   getSessionId();
   getVisitId();
   if (!localStorage.getItem(START_KEY)) {
@@ -628,10 +927,6 @@ function startRoute(options = {}) {
   return true;
 }
 function ensureRouteStarted(extra = {}) {
-  if (!hasAnalyticsConsent()) {
-    showPrivacyNotice();
-    return false;
-  }
   getSessionId();
   getVisitId();
   if (!localStorage.getItem(START_KEY)) {
@@ -651,10 +946,6 @@ function getGroupInfo() {
   catch { return {}; }
 }
 function saveGroupInfo() {
-  if (!hasAnalyticsConsent()) {
-    showPrivacyNotice();
-    return false;
-  }
   const groupType = document.getElementById("groupType")?.value || "";
   const groupSize = document.getElementById("groupSize")?.value || "";
   localStorage.setItem(GROUP_KEY, JSON.stringify({ group_type: groupType, group_size: groupSize }));
@@ -721,7 +1012,6 @@ function trackEvent(eventType, extra = {}) {
   try {
     fetch(ANALYTICS_ENDPOINT, {
       method: "POST",
-      mode: "no-cors",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify(payload),
       keepalive: true
@@ -874,7 +1164,7 @@ function buildCard(stop) {
 }
 
 /* ── ACTIONS ── */
-function setAnswer(id, val) { STATE.answers[id] = val; if (hasAnalyticsConsent()) saveState(); }
+function setAnswer(id, val) { STATE.answers[id] = val; saveState(); }
 
 function showHint(id) {
   if (!ensureRouteStarted({ source: "hint" })) return;

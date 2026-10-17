@@ -65,7 +65,7 @@ if(leadForm){
  if(summary&&message&&!message.value)message.value=summary;
  leadForm.addEventListener('submit',async e=>{
   e.preventDefault();const submit=leadForm.querySelector('[type="submit"]'),status=document.querySelector('#lead-status');status.className='lead-status';status.hidden=false;status.textContent='Enviando…';submit.disabled=true;
-  const fd=new FormData(leadForm),payload=Object.fromEntries(fd.entries());payload.consentimiento=fd.get('consentimiento')==='on';payload.marketing_opt_in=fd.get('marketing_opt_in')==='on';payload.company=payload.company||'';Object.assign(payload,readAttribution(payload.branch||branch));payload.request_id=(crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2));
+  const fd=new FormData(leadForm),payload=Object.fromEntries(fd.entries());payload.consentimiento=fd.get('consentimiento')==='on';payload.marketing_opt_in=fd.get('marketing_opt_in')==='on';payload.company=payload.company||'';Object.assign(payload,readAttribution(payload.branch||branch));payload.request_id=leadForm.dataset.requestId||(crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(16).slice(2));leadForm.dataset.requestId=payload.request_id;
   const endpoint=(window.CHISPA_LEADS&&window.CHISPA_LEADS.endpoint)||'';
   if(!endpoint){
     const subject='Consulta · '+branchLabel(payload.branch||branch)+' · Educando con chIspA';
@@ -77,7 +77,7 @@ if(leadForm){
    const controller=new AbortController();const t=setTimeout(()=>controller.abort(),window.CHISPA_LEADS.timeoutMs||9000);
    const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),signal:controller.signal});clearTimeout(t);
    const data=await res.json();if(!res.ok||!['success','ok'].includes(data.status))throw new Error(data.code||'SEND_FAILED');
-   status.textContent=data.notified===false?'Gracias. Tu consulta ha quedado registrada correctamente. El aviso interno ha quedado pendiente de revisión; no necesitas volver a enviarla.':'Gracias. Tu consulta ha quedado registrada y el aviso interno se ha enviado.';status.classList.add('success');leadForm.reset();
+   status.textContent=data.notified===false?'Gracias. Tu consulta ha quedado registrada correctamente. El aviso interno ha quedado pendiente de revisión; no necesitas volver a enviarla.':'Gracias. Tu consulta ha quedado registrada y el aviso interno se ha enviado.';status.classList.add('success');leadForm.reset();delete leadForm.dataset.requestId;
   }catch(err){status.textContent='No he podido confirmar el registro. No vuelvas a enviar varias veces: usa el email directo si tu consulta es urgente.';status.classList.add('error');}
   finally{submit.disabled=false;}
  });

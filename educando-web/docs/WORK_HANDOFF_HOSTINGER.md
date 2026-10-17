@@ -38,17 +38,21 @@ Antes de escribir en Hostinger:
 
 ## Google Sheets + Apps Script para leads
 
-Hacerlo desde la cuenta Google correcta de Educando con chIspA. Si la cuenta no está autenticada, detenerse únicamente para que José inicie sesión en el navegador; no pedir contraseña.
+La nueva Sheet debe quedar en la cuenta/Drive de `educandoconchispa@gmail.com`. **No asumir acceso del agente a ese Drive.** José hará el setup de Google si es necesario; Work debe dejar todo preparado y pedir sólo esa intervención puntual.
 
-1. Crear un proyecto de Apps Script de staging y copiar **exactamente** `educando-web/backend/apps-script/LeadGateway.gs` desde la rama de la PR.
-2. Ejecutar manualmente `setupLeadGateway()`. La función puede crear por sí sola el spreadsheet `Educando con chIspA · Leads`, la pestaña `Leads`, encabezados, `INGRESS_TOKEN`, `OWNER_EMAIL`, límite y `DRY_RUN=true`. No crear otra estructura manual si esta función funciona.
-3. Revisar la Sheet creada y confirmar las 17 columnas esperadas.
-4. Desplegar el script como Web App de staging ejecutándose con la cuenta propietaria y con acceso que permita al proxy de Hostinger realizar POST HTTPS. Si la política de la cuenta impide un acceso apropiado, detenerse y explicar el bloqueo; no rebajar otros controles.
-5. Guardar la URL del Web App y el token únicamente en un archivo privado de Hostinger situado **fuera de `public_html` / fuera del document root**. Usar como plantilla `educando-web/docs/lead-config.example.php.txt`. El archivo real debe ser `.chispa-leads.php` o una ruta configurada mediante `CHISPA_CONFIG_PATH`.
-6. Primero probar con `DRY_RUN=true`: un POST ficticio debe validar pero no escribir ni enviar.
-7. Para la prueba E2E de staging, cambiar sólo entonces a `DRY_RUN=false` y enviar un lead ficticio controlado **sin teléfono**. Debe aparecer exactamente una fila y llegar el aviso interno. Verificar estado `AVISADO`.
-8. Reintentar la misma solicitud con el mismo `request_id` para comprobar idempotencia: no debe crear otra fila ni consumir otro slot de cuota.
-9. Si el email interno falla pero la fila se guardó, el estado esperado es `AVISO_PENDIENTE`; el frontend debe decir que la consulta quedó registrada y el aviso interno está pendiente, nunca pedir un reenvío ciego.
+Procedimiento mínimo para José:
+1. En la cuenta `educandoconchispa@gmail.com`, crear un proyecto de Apps Script de staging y copiar **exactamente** `educando-web/backend/apps-script/LeadGateway.gs` desde la rama de la PR.
+2. Ejecutar manualmente `setupLeadGateway()`. La función puede crear por sí sola el spreadsheet `Educando con chIspA · Leads`, la pestaña `Leads`, encabezados, `INGRESS_TOKEN`, `OWNER_EMAIL`, límite y `DRY_RUN=true`.
+3. Revisar que la Sheet creada tenga 17 columnas y desplegar el script como Web App de staging ejecutándose con la cuenta propietaria y con acceso que permita al proxy de Hostinger realizar POST HTTPS.
+4. **No pegar el token ni credenciales en el chat.** La URL del Web App y el token deben copiarse directamente al archivo privado de Hostinger situado fuera del document root, usando `educando-web/docs/lead-config.example.php.txt` como plantilla.
+
+Una vez José haya hecho ese setup, Work debe continuar automáticamente con:
+- prueba `DRY_RUN=true` sin escritura ni email;
+- prueba E2E con `DRY_RUN=false` y lead ficticio **sin teléfono**;
+- exactamente una fila y aviso interno;
+- estado `AVISADO` cuando el correo funcione;
+- reintento con el mismo `request_id` sin duplicar;
+- comprobación del caso `AVISO_PENDIENTE` cuando sea posible simularlo con seguridad.
 
 ## Analítica de la web principal y de la ruta
 

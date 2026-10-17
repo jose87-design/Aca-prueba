@@ -12,3 +12,8 @@ class PackagingTest(unittest.TestCase):
    p=Path(d)/'rules';p.write_text('Redirect 301 /blog/ https://educandoconchispa.com/')
    with self.assertRaises(ValueError):pack.check_htaccess(p)
    p.write_text('# Redirect /blog/ disabled\nRewriteEngine On');pack.check_htaccess(p)
+
+ def test_production_blocked_by_pending_legal(self):
+  with tempfile.TemporaryDirectory() as d:
+   p=Path(d)/'rules';p.write_text('RewriteEngine On\n')
+   with self.assertRaisesRegex(ValueError,'faltan datos legales'):pack.package(True,p)

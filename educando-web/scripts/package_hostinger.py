@@ -17,6 +17,11 @@ def check_htaccess(path):
 def package(production=False,htaccess=None):
  if production:check_htaccess(htaccess)
  src=ROOT/'public'
+ if production:
+  pending=[]
+  for page in src.rglob('*.html'):
+   if 'LEGAL_PENDING' in page.read_text(errors='ignore'): pending.append(str(page.relative_to(src)))
+  if pending: raise ValueError('Producción bloqueada: faltan datos legales en '+', '.join(pending))
  for n in [ROUTE+'/index.html',ROUTE+'/info.html']:
   if not (src/n).is_file():raise ValueError('Falta la ruta preservada: '+n)
  for f in src.rglob('*'):

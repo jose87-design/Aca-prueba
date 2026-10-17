@@ -4,6 +4,11 @@ El paquete `deploy/Hostinger_Web_Prueba.zip` se construye desde `public/` e incl
 
 ## Preparar la prueba
 
+### Fuente preferida del paquete
+
+Para una prueba operativa, usar el artefacto **`chispa-hostinger-staging` del último run verde** del workflow `Chispa web review`. Ese artefacto sólo se publica después de build, chequeo estructural, auditoría de secretos, integridad/sintaxis de la ruta, tests de los gateways, lint PHP/JS y verificación de reproducibilidad. El ZIP versionado en el repositorio no debe prevalecer sobre un artefacto CI más reciente.
+
+
 Ejecutar desde `educando-web/`:
 
 ```sh

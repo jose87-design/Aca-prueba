@@ -18,7 +18,8 @@ function parse_(e,c){
  if(txt_(x.company,500))throw new Error('HONEYPOT');if(x.consentimiento!==true)throw new Error('CONSENT');
  const email=txt_(x.email,254).toLowerCase();if(!/^[^\s@,;<>\r\n]+@[^\s@,;<>\r\n]+\.[^\s@,;<>\r\n]+$/.test(email))throw new Error('EMAIL');
  const branch=['education','business','experiences','speaking','other'].includes(x.branch)?x.branch:'other';
- return {requestId:txt_(x.request_id,100)||Utilities.getUuid(),nombre:txt_(x.nombre,100).replace(/[\r\n]/g,' ')||'Sin nombre',email,telefono:txt_(x.telefono,40),perfil:txt_(x.perfil,120),branch,mensaje:txt_(x.mensaje,1800),marketing:x.marketing_opt_in===true,sourcePage:txt_(x.source_page,300),sourceCta:txt_(x.source_cta,120),utmSource:txt_(x.utm_source,120),utmMedium:txt_(x.utm_medium,120),utmCampaign:txt_(x.utm_campaign,180),referrer:txt_(x.referrer,500)};
+ const requestedId=txt_(x.request_id,100);const requestId=/^[A-Za-z0-9_-]{8,100}$/.test(requestedId)?requestedId:Utilities.getUuid();
+ return {requestId:requestId,nombre:txt_(x.nombre,100).replace(/[\r\n]/g,' ')||'Sin nombre',email,telefono:txt_(x.telefono,40),perfil:txt_(x.perfil,120),branch,mensaje:txt_(x.mensaje,1800),marketing:x.marketing_opt_in===true,sourcePage:txt_(x.source_page,300),sourceCta:txt_(x.source_cta,120),utmSource:txt_(x.utm_source,120),utmMedium:txt_(x.utm_medium,120),utmCampaign:txt_(x.utm_campaign,180),referrer:txt_(x.referrer,500)};
 }
 function label_(b){return ({education:'EDUCACIÓN',business:'EMPRESA',experiences:'EXPERIENCIAS',speaking:'CHARLAS',other:'OTRO'})[b]||'OTRO';}
 function reserve_(c){const p=PropertiesService.getScriptProperties(),bucket=new Date().toISOString().slice(0,13),n=p.getProperty('LEAD_HOUR')===bucket?Number(p.getProperty('LEAD_ATTEMPTS')||0):0;if(!Number.isFinite(n)||n>=c.hourly)throw new Error('QUOTA');p.setProperties({LEAD_HOUR:bucket,LEAD_ATTEMPTS:String(n+1)});}
@@ -55,8 +56,9 @@ function doPost(e){
  const lock=LockService.getScriptLock();if(!lock.tryLock(10000))return out_({status:'error',code:'BUSY'});
  let sheet,row;
  try{
-  reserve_(c);sheet=ensureSheet_(SpreadsheetApp.openById(c.sheetId),c.sheetName);
+  sheet=ensureSheet_(SpreadsheetApp.openById(c.sheetId),c.sheetName);
   if(findRequest_(sheet,d.requestId))return out_({status:'ok',code:'duplicate_request',stored:true,notified:false});
+  reserve_(c);
   sheet.appendRow([new Date(),safeCell_(d.requestId),safeCell_(d.nombre),safeCell_(d.email),safeCell_(d.telefono),safeCell_(d.perfil),d.branch,safeCell_(d.mensaje),'Sí',d.marketing?'Sí':'No',safeCell_(d.sourcePage),safeCell_(d.sourceCta),safeCell_(d.utmSource),safeCell_(d.utmMedium),safeCell_(d.utmCampaign),safeCell_(d.referrer),'GUARDADO']);
   row=sheet.getLastRow();SpreadsheetApp.flush();
  }catch(err){console.error('LeadGateway STORE_FAILED '+err.message);return out_({status:'error',code:err.message==='QUOTA'?'QUOTA':'STORE_FAILED'});}

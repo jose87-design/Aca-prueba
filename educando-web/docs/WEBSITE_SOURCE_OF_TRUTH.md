@@ -39,3 +39,17 @@ Formación docente y de equipos; diagnóstico; mejora de procesos; automatizaci�
 ## Datos privados
 
 No mantenerlos en este archivo. Secretos, cuentas, rutas operativas y accesos pertenecen a documentación privada separada. Esta fuente está preparada para un repositorio público.
+
+
+## Producto propio · Campus + Studio
+
+Confirmado por el titular como producto propio de Educando con chIspA y apto para presentarse en la web pública.
+
+- Campus: LMS y fuente de verdad de cursos, matrículas, progreso, actividades, evaluación y feedback.
+- Studio: entorno de creación conectado al Campus para preparar propuestas de curso con apoyo de IA.
+- Flujo editorial permitido: Studio genera/proporciona una propuesta; el docente la revisa y decide; el contenido llega al Campus como borrador editable; la publicación y gestión permanecen bajo control docente.
+- No afirmar publicación autónoma por IA, generación ilimitada ni sustitución de la revisión docente.
+- URLs de producto: `https://campus.educandoconchispa.com` y `https://studio.educandoconchispa.com`.
+- `https://ia.educandoconchispa.com` se mantiene como entrada de IA educativa, Diagnóstico CHISPA y recursos; no se reutiliza como dominio de Campus/Studio.
+- La landing comercial del producto vive en `/plataforma/`, dentro del dominio principal, para concentrar marca, SEO y conversión.
+- Antes de producción, Work debe verificar que los dos subdominios resuelven y que los accesos/permisos coinciden con lo descrito. La web puede presentar la arquitectura y el producto sin afirmar métricas de uso ni disponibilidad comercial no verificada.

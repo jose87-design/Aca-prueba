@@ -17,9 +17,9 @@ Fecha de inicio: 29/09/2026, Europe/Madrid. Fuente técnica: ZIP recibido. No eq
 
 ## Arquitectura candidata
 
-Inicio → Formación, Empresas (URL `/pymes/`), Proyectos, Actualidad, Sobre mí y Contacto. Charlas dentro de Actualidad y footer. Formación incorpora contenido útil que se podrá consolidar si se aprueba la migración. La versión educativa actual sigue funcionando en su subdominio durante la revisión.
+Inicio → Formación, Plataforma (`/plataforma/`), Empresas (URL `/pymes/`), Proyectos, Actualidad, Sobre mí y Contacto. Charlas dentro de Actualidad y footer. Formación incorpora contenido útil que se podrá consolidar si se aprueba la migración. La versión educativa actual sigue funcionando en su subdominio durante la revisión.
 
-Se conserva `/pymes/` para reducir cambios de URLs. El repositorio incluye páginas nuevas `/formacion/`, `/sobre-mi/`, `/blog/`, `/charlas/`, `/proyectos/`, `/contacto/` y dos artículos. No se presume que mover un subdominio mejorará rankings por sí mismo.
+Se conserva `/pymes/` para reducir cambios de URLs. El repositorio incluye páginas nuevas `/formacion/`, `/plataforma/`, `/sobre-mi/`, `/blog/`, `/charlas/`, `/proyectos/`, `/contacto/` y dos artículos. La landing `/plataforma/` vende el producto propio Campus + Studio sin cargar sus aplicaciones dentro de la web pública. No se presume que mover un subdominio mejorará rankings por sí mismo.
 
 ## SEO/GEO
 

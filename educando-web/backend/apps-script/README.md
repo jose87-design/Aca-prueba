@@ -24,7 +24,7 @@ Pruebas locales, sin llamadas a Google: `node --test tests/lead-magnet.test.cjs`
 
 ## Gateway general de consultas
 
-`LeadGateway.gs` es el candidato para la nueva captación multirrama. Usa una hoja dedicada con 17 columnas, guarda antes de enviar el aviso interno y no depende de n8n ni de un modelo de IA. Configurar `LEADS_SHEET_ID`, `LEADS_SHEET_NAME`, `OWNER_EMAIL`, `DRY_RUN=true` y `MAX_LEADS_PER_HOUR`. Probar con datos ficticios antes de conectar `public/assets/lead-config.js` al endpoint de staging. Una caída del aviso deja el lead en estado `AVISO_PENDIENTE`; el formulario ya no debe prometer que el aviso llegó si el backend no lo confirma.
+`LeadGateway.gs` es el candidato para la nueva captación multirrama. Usa una hoja dedicada con 17 columnas, guarda antes de enviar el aviso interno y no depende de n8n ni de un modelo de IA. Configurar `LEADS_SHEET_ID`, `LEADS_SHEET_NAME`, `OWNER_EMAIL`, `INGRESS_TOKEN`, `DRY_RUN=true` y `MAX_LEADS_PER_HOUR`. El token debe coincidir con el archivo privado del proxy de Hostinger y nunca aparecer en el frontend. Probar con datos ficticios antes de conectar `public/assets/lead-config.js` al endpoint de staging. Una caída del aviso deja el lead en estado `AVISO_PENDIENTE`; el formulario ya no debe prometer que el aviso llegó si el backend no lo confirma.
 
 ## Preparación rápida de LeadGateway
 

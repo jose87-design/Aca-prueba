@@ -28,6 +28,6 @@ Versión de revisión, **no producción**. Todas las páginas tienen `noindex,no
 
 El contacto llama al proxy mismo-origen `/api/lead.php`, que valida, limita abuso y reenvía al Apps Script sólo desde servidor. La URL upstream y el token de ingreso deben vivir fuera de `public_html`. El gateway de Apps Script guarda antes de avisar por email. El Pergamino usa almacenamiento local técnico y analítica opcional separada; el navegador envía sus eventos a `/api/route-event.php`, no al Apps Script real. No hay IA ni n8n en el camino crítico.
 
-Staging incluye una política de privacidad nueva y un aviso legal con bloqueo `LEGAL_PENDING`: el paquete de producción no puede generarse hasta completar forma jurídica/condición profesional, NIF y domicilio o establecimiento profesional. No sustituir `public_html` hasta inventariar y copiar las aplicaciones/rutas que no estén incluidas.
+Staging incluye una política de privacidad nueva y un aviso legal con bloqueo `LEGAL_PENDING`: el paquete de producción no puede generarse hasta completar NIF y domicilio o establecimiento profesional. No sustituir `public_html` hasta inventariar y copiar las aplicaciones/rutas que no estén incluidas.
 
 Ver `docs/AUDIT.md`, `docs/WEBSITE_SOURCE_OF_TRUTH.md`, `WEB_UPDATE_RULES.md`, `docs/MIGRATION.md`, `docs/VALIDATION.md`, `docs/SECURITY_PRIVACY_REVIEW.md`, `docs/WORK_HANDOFF_HOSTINGER.md` y `automation/README.md`.

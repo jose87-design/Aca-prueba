@@ -1,0 +1,8 @@
+<?php
+// Plantilla únicamente. El archivo real debe vivir FUERA de public_html
+// con nombre .chispa-leads.php y no debe subirse al repositorio.
+return [
+    'upstream' => 'https://script.google.com/macros/s/REEMPLAZAR/exec',
+    'ingress_token' => 'GENERAR_UN_TOKEN_ALEATORIO_LARGO',
+    'max_per_ip_hour' => 12,
+];

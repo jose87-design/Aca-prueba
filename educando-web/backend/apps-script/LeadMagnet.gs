@@ -5,7 +5,7 @@
 function config_() {
   const p = PropertiesService.getScriptProperties();
   const c = { sheetId: p.getProperty('SHEET_ID'), sheetName: p.getProperty('SHEET_NAME') || 'Hoja 1', pdfId: p.getProperty('PDF_FILE_ID'), owner: p.getProperty('OWNER_EMAIL') || '', dryRun: p.getProperty('DRY_RUN') !== 'false', hourly: Number(p.getProperty('MAX_SENDS_PER_HOUR') || 20) };
-  if (!c.sheetId || !c.pdfId || !Number.isInteger(c.hourly) || c.hourly < 1 || c.hourly > 100) throw new Error('CONFIG');
+  if (!c.sheetId || !c.pdfId || !c.owner || !Number.isInteger(c.hourly) || c.hourly < 1 || c.hourly > 100) throw new Error('CONFIG');
   return c;
 }
 function text_(value, max) {
@@ -43,7 +43,7 @@ function reserveBudget_(c) {
   const p = PropertiesService.getScriptProperties();
   const bucket = new Date().toISOString().slice(0, 13);
   const previous = p.getProperty('SEND_HOUR') === bucket ? Number(p.getProperty('SEND_ATTEMPTS') || 0) : 0;
-  if (!Number.isFinite(previous) || previous >= c.hourly || MailApp.getRemainingDailyQuota() < 1) throw new Error('QUOTA');
+  if (!Number.isFinite(previous) || previous >= c.hourly || MailApp.getRemainingDailyQuota() < 2) throw new Error('QUOTA');
   p.setProperties({ SEND_HOUR: bucket, SEND_ATTEMPTS: String(previous + 1) });
 }
 function sendPdf_(c, d, blob) {
@@ -93,11 +93,13 @@ function doPost(e) {
     console.error('LeadMagnet: ' + (accepted ? 'SEND_ACCEPTED_PERSISTENCE_FAILED' : 'PROCESS_FAILED'));
     return json_({status:'error',code:accepted ? 'SEND_ACCEPTED_PERSISTENCE_FAILED' : (err.message === 'QUOTA' ? 'QUOTA' : 'PROCESS_FAILED')});
   } finally { lock.releaseLock(); }
-  // A commercial notification failure never changes the PDF result.
-  if (accepted && d.telefono && c.owner) {
+  // El aviso interno se intenta para todo lead aceptado, tenga o no teléfono.
+  let ownerNotified = false;
+  if (accepted) {
     try {
-      if (MailApp.getRemainingDailyQuota() > 0) MailApp.sendEmail({to:c.owner,subject:'Lead con teléfono en chIspA',body:'Nombre: '+d.nombre+'\nEmail: '+d.email+'\nTeléfono: '+d.telefono+'\nPerfil: '+d.perfil+'\nMensaje: '+d.mensaje});
+      MailApp.sendEmail({to:c.owner,replyTo:d.email,name:'Educando con chIspA · Leads',subject:'NUEVO LEAD · DIAGNÓSTICO CHISPA',body:'Nombre: '+d.nombre+'\nEmail: '+d.email+'\nTeléfono: '+(d.telefono||'—')+'\nPerfil: '+(d.perfil||'—')+'\nMensaje: '+(d.mensaje||'—')});
+      ownerNotified = true;
     } catch (err) { console.error('LeadMagnet: OWNER_NOTICE_FAILED'); }
   }
-  return json_({status:'success',code:'MAIL_ACCEPTED',deliveryConfirmed:false});
+  return json_({status:'success',code:'MAIL_ACCEPTED',deliveryConfirmed:false,ownerNotified:ownerNotified});
 }

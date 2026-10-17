@@ -24,12 +24,31 @@ motion?.addEventListener('click',()=>{paused=!paused;applyMotion();});reduce.add
 
 function params(){return new URLSearchParams(location.search);}
 function branchLabel(branch){return ({education:'Educación y formación',business:'Empresa y automatización',experiences:'Proyecto o experiencia',speaking:'Charlas y eventos',other:'Otra consulta'})[branch]||'Otra consulta';}
+function privacySafeReferrer(){
+ if(!document.referrer)return'';
+ try{const u=new URL(document.referrer);return (u.origin+u.pathname).slice(0,500);}catch{return'';}
+}
 function readAttribution(branch){
  const q=params();
- return {branch,source_page:location.pathname,source_cta:q.get('cta')||'',utm_source:q.get('utm_source')||'',utm_medium:q.get('utm_medium')||'',utm_campaign:q.get('utm_campaign')||'',referrer:document.referrer||''};
+ return {branch,source_page:location.pathname,source_cta:q.get('cta')||'',utm_source:q.get('utm_source')||'',utm_medium:q.get('utm_medium')||'',utm_campaign:q.get('utm_campaign')||'',referrer:privacySafeReferrer()};
+}
+const CONTACT_SUMMARY_KEY='chispa-contact-summary-v1';
+function saveContactSummary(branch,summary){
+ if(!summary)return;
+ try{sessionStorage.setItem(CONTACT_SUMMARY_KEY,JSON.stringify({branch,summary:summary.slice(0,1500),ts:Date.now()}));}catch{}
+}
+function takeContactSummary(branch){
+ try{
+  const raw=sessionStorage.getItem(CONTACT_SUMMARY_KEY);if(!raw)return'';
+  sessionStorage.removeItem(CONTACT_SUMMARY_KEY);
+  const data=JSON.parse(raw);
+  if(!data||data.branch!==branch||Date.now()-Number(data.ts)>15*60*1000)return'';
+  return String(data.summary||'').slice(0,1500);
+ }catch{return'';}
 }
 function contactUrl(branch,summary,cta){
- const u=new URL('../contacto/index.html',location.href);u.searchParams.set('branch',branch);if(summary)u.searchParams.set('summary',summary.slice(0,1500));if(cta)u.searchParams.set('cta',cta);return u.href;
+ saveContactSummary(branch,summary);
+ const u=new URL('../contacto/index.html',location.href);u.searchParams.set('branch',branch);if(cta)u.searchParams.set('cta',cta);return u.href;
 }
 
 document.querySelectorAll('[data-branch-link]').forEach(a=>{
@@ -39,7 +58,7 @@ document.querySelectorAll('[data-branch-link]').forEach(a=>{
 
 const leadForm=document.querySelector('#lead-form');
 if(leadForm){
- const q=params(),branch=q.get('branch')||leadForm.dataset.defaultBranch||'other',summary=q.get('summary')||'';
+ const q=params(),branch=q.get('branch')||leadForm.dataset.defaultBranch||'other',summary=takeContactSummary(branch);
  const branchInput=leadForm.querySelector('[name="branch"]'),context=document.querySelector('#branch-context'),message=leadForm.querySelector('[name="mensaje"]');
  if(branchInput)branchInput.value=branch;if(context)context.textContent='Contexto detectado: '+branchLabel(branch)+'. Puedes cambiarlo si tu consulta es otra.';
  const select=leadForm.querySelector('[name="perfil"]');if(select){const map={education:'Docente o centro educativo',business:'Empresa u organización',experiences:'Proyecto de territorio, cultura o evento',speaking:'Charla o evento',other:'Otro contexto'};select.value=map[branch]||map.other;}

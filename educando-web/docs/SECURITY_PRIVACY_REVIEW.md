@@ -66,7 +66,6 @@ Estas directivas deben comprobarse en el servidor real porque la compatibilidad 
 La política nueva aplica información por capas: resumen junto al formulario y detalle en `/privacidad/`. Describe categorías de datos, finalidades/bases, proveedores, transferencias, conservación, derechos, almacenamiento local y analítica opcional.
 
 El aviso legal de staging tiene tres marcadores deliberados:
-- `LEGAL_PENDING_LEGAL_FORM`
 - `LEGAL_PENDING_NIF`
 - `LEGAL_PENDING_ADDRESS`
 
@@ -75,11 +74,10 @@ El aviso legal de staging tiene tres marcadores deliberados:
 ## Riesgos residuales / decisiones conscientes
 
 1. **CSP con `'unsafe-inline'` en scripts.** Se mantiene para preservar la ruta histórica, que contiene JavaScript embebido y datos inline. Es mejor que no tener CSP, pero no es el estado más estricto posible. Refactorizar toda la ruta a JS externo puede hacerse después de estabilizar staging.
-2. **Google Fonts en la ruta preservada.** Produce una petición técnica a Google al cargar las tipografías. Está declarada en privacidad. Si se desea minimizar aún más terceros, sustituir posteriormente por fuentes del sistema o activos propios.
-3. **Analítica histórica de la ruta.** Si se reutiliza el antiguo Web App de Apps Script, su URL ya fue pública y no debe tratarse como secreto ni como control de autenticación. El proxy nuevo limita el tráfico normal, pero no puede revocar una URL histórica. Para integridad fuerte, crear un receptor nuevo autenticado en una fase posterior.
-4. **Rate limiting en hosting.** Es una barrera antiabuso razonable para un formulario de bajo volumen, no un WAF. Debe observarse en staging y ajustar límites si aparecen falsos positivos.
-5. **Email.** `MailApp.sendEmail` aceptado no equivale a entrega final. Los estados reflejan aceptación/intento; no se promete una entrega SMTP certificada.
-6. **Texto legal.** Es un borrador técnico orientado a cumplimiento, no sustituye asesoramiento jurídico individual. Producción permanece bloqueada hasta completar la identidad legal y revisar que proveedores/finalidades reales coinciden con el texto.
+2. **Analítica histórica de la ruta.** Si se reutiliza el antiguo Web App de Apps Script, su URL ya fue pública y no debe tratarse como secreto ni como control de autenticación. El proxy nuevo limita el tráfico normal, pero no puede revocar una URL histórica. Para integridad fuerte, crear un receptor nuevo autenticado en una fase posterior.
+3. **Rate limiting en hosting.** Es una barrera antiabuso razonable para un formulario de bajo volumen, no un WAF. Debe observarse en staging y ajustar límites si aparecen falsos positivos.
+4. **Email.** `MailApp.sendEmail` aceptado no equivale a entrega final. Los estados reflejan aceptación/intento; no se promete una entrega SMTP certificada.
+5. **Texto legal.** Es un borrador técnico orientado a cumplimiento, no sustituye asesoramiento jurídico individual. Producción permanece bloqueada hasta completar la identidad legal y revisar que proveedores/finalidades reales coinciden con el texto.
 
 ## Evidencias exigidas antes de producción
 

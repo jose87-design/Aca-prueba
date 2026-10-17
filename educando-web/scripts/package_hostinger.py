@@ -31,7 +31,10 @@ def package(production=False,htaccess=None):
  shutil.rmtree(out,ignore_errors=True);shutil.copytree(src,out)
  rules=ROOT/'deploy'/('hostinger-production.htaccess' if production else 'hostinger-stage.htaccess')
  (out/'.htaccess').write_bytes(rules.read_bytes())
- for f in out.rglob('*.html'):f.write_text(indexed_html(f.read_text(),production))
+ for f in out.rglob('*.html'):
+  rel=f.relative_to(out).as_posix()
+  keep_noindex=production and rel in {'privacidad/index.html','aviso-legal/index.html'}
+  f.write_text(indexed_html(f.read_text(),False if keep_noindex else production))
  if production:
   (out/'sitemap.xml').write_bytes((ROOT/'docs/sitemap.production-candidate.xml').read_bytes())
   (out/'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://educandoconchispa.com/sitemap.xml\n')

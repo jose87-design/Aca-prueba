@@ -24,6 +24,25 @@ function label_(b){return ({education:'EDUCACIÓN',business:'EMPRESA',experience
 function reserve_(c){const p=PropertiesService.getScriptProperties(),bucket=new Date().toISOString().slice(0,13),n=p.getProperty('LEAD_HOUR')===bucket?Number(p.getProperty('LEAD_ATTEMPTS')||0):0;if(!Number.isFinite(n)||n>=c.hourly)throw new Error('QUOTA');p.setProperties({LEAD_HOUR:bucket,LEAD_ATTEMPTS:String(n+1)});}
 function findRequest_(sheet,id){if(sheet.getLastRow()<2)return false;const ids=sheet.getRange(2,2,sheet.getLastRow()-1,1).getValues();return ids.some(r=>String(r[0])===id);}
 function headers_(){return ['Fecha','Request_ID','Nombre','Email','Telefono','Perfil','Rama','Mensaje','Privacidad','Marketing','Source_Page','Source_CTA','UTM_Source','UTM_Medium','UTM_Campaign','Referrer','Estado'];}
+function ensureSheet_(ss,name){
+ let sheet=ss.getSheetByName(name);if(!sheet)sheet=ss.insertSheet(name);
+ const h=headers_();if(sheet.getMaxColumns()<h.length)sheet.insertColumnsAfter(sheet.getMaxColumns(),h.length-sheet.getMaxColumns());
+ if(sheet.getLastRow()===0)sheet.appendRow(h);else{const current=sheet.getRange(1,1,1,h.length).getValues()[0];if(current.join('|')!==h.join('|'))throw new Error('HEADERS');}
+ return sheet;
+}
+function setupLeadGateway(){
+ const p=PropertiesService.getScriptProperties();
+ const sheetName=p.getProperty('LEADS_SHEET_NAME')||'Leads';
+ let sheetId=p.getProperty('LEADS_SHEET_ID')||'',ss;
+ if(sheetId){ss=SpreadsheetApp.openById(sheetId);}else{ss=SpreadsheetApp.create('Educando con chIspA · Leads');sheetId=ss.getId();const first=ss.getSheets()[0];if(first)first.setName(sheetName);p.setProperty('LEADS_SHEET_ID',sheetId);}
+ ensureSheet_(ss,sheetName);
+ let token=p.getProperty('INGRESS_TOKEN')||'';
+ if(token.length<24){token=(Utilities.getUuid()+Utilities.getUuid()).replace(/-/g,'');p.setProperty('INGRESS_TOKEN',token);}
+ if(!p.getProperty('OWNER_EMAIL'))p.setProperty('OWNER_EMAIL','educandoconchispa@gmail.com');
+ if(!p.getProperty('MAX_LEADS_PER_HOUR'))p.setProperty('MAX_LEADS_PER_HOUR','40');
+ p.setProperty('LEADS_SHEET_NAME',sheetName);p.setProperty('DRY_RUN','true');
+ return {sheetId:sheetId,sheetUrl:ss.getUrl(),sheetName:sheetName,owner:p.getProperty('OWNER_EMAIL'),ingressToken:token,dryRun:true};
+}
 function notify_(c,d){
  const subject='NUEVO LEAD · '+label_(d.branch)+' · Educando con chIspA';
  const body=['Nombre: '+d.nombre,'Email: '+d.email,'Teléfono: '+(d.telefono||'—'),'Perfil: '+(d.perfil||'—'),'Rama: '+label_(d.branch),'Página: '+(d.sourcePage||'—'),'CTA: '+(d.sourceCta||'—'),'Campaña: '+(d.utmCampaign||'—'),'','Mensaje:',d.mensaje].join('\n');
@@ -36,9 +55,7 @@ function doPost(e){
  const lock=LockService.getScriptLock();if(!lock.tryLock(10000))return out_({status:'error',code:'BUSY'});
  let sheet,row;
  try{
-  reserve_(c);sheet=SpreadsheetApp.openById(c.sheetId).getSheetByName(c.sheetName);if(!sheet)throw new Error('SHEET');
-  const h=headers_();if(sheet.getMaxColumns()<h.length)sheet.insertColumnsAfter(sheet.getMaxColumns(),h.length-sheet.getMaxColumns());
-  if(sheet.getLastRow()===0)sheet.appendRow(h);else{const current=sheet.getRange(1,1,1,h.length).getValues()[0];if(current.join('|')!==h.join('|'))throw new Error('HEADERS');}
+  reserve_(c);sheet=ensureSheet_(SpreadsheetApp.openById(c.sheetId),c.sheetName);
   if(findRequest_(sheet,d.requestId))return out_({status:'ok',code:'duplicate_request',stored:true,notified:false});
   sheet.appendRow([new Date(),safeCell_(d.requestId),safeCell_(d.nombre),safeCell_(d.email),safeCell_(d.telefono),safeCell_(d.perfil),d.branch,safeCell_(d.mensaje),'Sí',d.marketing?'Sí':'No',safeCell_(d.sourcePage),safeCell_(d.sourceCta),safeCell_(d.utmSource),safeCell_(d.utmMedium),safeCell_(d.utmCampaign),safeCell_(d.referrer),'GUARDADO']);
   row=sheet.getLastRow();SpreadsheetApp.flush();

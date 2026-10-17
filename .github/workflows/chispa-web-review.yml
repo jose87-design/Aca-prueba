@@ -19,6 +19,7 @@ jobs:
       - run: python3 educando-web/scripts/check.py
       - run: python3 -m unittest discover -s educando-web/tests -v
       - run: node --test educando-web/tests/lead-magnet.test.cjs
+      - run: node --test educando-web/tests/lead-gateway.test.cjs
       - run: python3 educando-web/scripts/package_hostinger.py
       - run: node --check educando-web/public/assets/site.js
       - name: Verify generated pages match source

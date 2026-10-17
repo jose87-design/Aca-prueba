@@ -21,6 +21,8 @@ jobs:
       - run: node --test educando-web/tests/lead-magnet.test.cjs
       - run: node --test educando-web/tests/lead-gateway.test.cjs
       - run: python3 educando-web/scripts/package_hostinger.py
+      - run: unzip -t educando-web/deploy/Hostinger_Web_Prueba.zip
+      - run: python3 -m json.tool educando-web/docs/hostinger-package-check.json >/dev/null
       - run: node --check educando-web/public/assets/site.js
       - name: Verify generated pages match source
-        run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml educando-web/deploy/Hostinger_Web_Prueba.zip educando-web/docs/hostinger-package-check.json
+        run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml

@@ -19,6 +19,9 @@ for p in PUBLIC.rglob('*'):
   if rx.search(text):issues.append(f'{p.relative_to(ROOT)}: possible {name}')
 cfg=(PUBLIC/'assets/lead-config.js').read_text()
 if 'endpoint: "/api/lead.php"' not in cfg:issues.append('lead-config.js must use same-origin /api/lead.php')
+site=(PUBLIC/'assets/site.js').read_text()
+if "searchParams.set('summary'" in site or 'searchParams.set("summary"' in site:issues.append('site.js must not place user diagnostic summaries in URLs')
+if 'referrer:document.referrer' in site:issues.append('site.js must strip referrer query/hash data before persistence')
 for ht in [ROOT/'deploy/hostinger-stage.htaccess',ROOT/'deploy/hostinger-production.htaccess']:
  text=ht.read_text()
  for required in ['Content-Security-Policy','X-Content-Type-Options','Referrer-Policy','Permissions-Policy']:

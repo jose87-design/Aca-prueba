@@ -18,6 +18,7 @@ jobs:
       - run: python3 educando-web/scripts/build.py
       - run: python3 educando-web/scripts/check.py
       - run: python3 educando-web/scripts/security_check.py
+      - run: python3 educando-web/scripts/check_route.py
       - run: python3 -m unittest discover -s educando-web/tests -v
       - run: node --test educando-web/tests/lead-magnet.test.cjs
       - run: node --test educando-web/tests/lead-gateway.test.cjs
@@ -29,3 +30,12 @@ jobs:
       - run: php -l educando-web/public/api/route-event.php
       - name: Verify generated pages match source
         run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml
+      - name: Publish validated Hostinger staging package
+        uses: actions/upload-artifact@v4
+        with:
+          name: chispa-hostinger-staging
+          path: |
+            educando-web/deploy/Hostinger_Web_Prueba.zip
+            educando-web/docs/hostinger-package-check.json
+          retention-days: 7
+          if-no-files-found: error

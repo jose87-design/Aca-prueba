@@ -16,7 +16,7 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=302]
   Header always set X-Frame-Options "DENY"
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
   Header always set Cross-Origin-Opener-Policy "same-origin"
-  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; form-action 'self' https://ia.educandoconchispa.com; upgrade-insecure-requests"
+  Header always set Content-Security-Policy "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self' 'unsafe-inline'; connect-src 'self'; media-src 'self'; worker-src 'none'; manifest-src 'self'; form-action 'self'; upgrade-insecure-requests"
 </IfModule>
 
 # Do not expose hidden/config/backup material if it is ever copied by mistake.

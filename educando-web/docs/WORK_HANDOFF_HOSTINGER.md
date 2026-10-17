@@ -11,7 +11,7 @@ Llevar la rama `codex/educando-web-review` de `jose87-design/Aca-prueba` a un **
 - La URL real de Apps Script y `INGRESS_TOKEN` nunca deben aparecer en JavaScript, HTML, GitHub ni dentro del document root.
 - `LeadGateway.gs` guarda primero en Sheets y después intenta el aviso por email. n8n e IA no son parte del camino crítico.
 - El Diagnóstico CHISPA educativo existente sigue en `ia.educandoconchispa.com`; no sustituirlo todavía. Su candidato `LeadMagnet.gs` ya corrige el aviso al propietario incluso sin teléfono, pero no se despliega sobre el flujo vivo sin staging específico.
-- La ruta `/ruta-pergamino-3-culturas-Tarazona/` debe conservarse. Su progreso usa almacenamiento local técnico; la analítica del piloto es opcional y revocable.
+- La ruta `/ruta-pergamino-3-culturas-Tarazona/` debe conservarse **en la misma URL exacta** para no romper el QR físico ya distribuido. Su progreso usa almacenamiento local técnico; la analítica del piloto es pseudonimizada/reducida, se informa únicamente dentro del juego y debe seguir escribiendo en la **Sheet existente** asociada a esa ruta. No crear una Sheet nueva para el Pergamino ni cambiar su receptor salvo que el existente esté roto.
 - La política de privacidad nueva usa información por capas. El aviso legal contiene `LEGAL_PENDING` para NIF y domicilio/establecimiento profesional. El empaquetador bloquea producción mientras falten.
 - La PR tiene controles de secretos, PHP, JS, tests de gateways, integridad de ruta, empaquetado y reproducibilidad. Usar sólo un artefacto `chispa-hostinger-staging` procedente del **último run verde** de GitHub Actions.
 
@@ -50,17 +50,21 @@ Hacerlo desde la cuenta Google correcta de Educando con chIspA. Si la cuenta no 
 8. Reintentar la misma solicitud con el mismo `request_id` para comprobar idempotencia: no debe crear otra fila ni consumir otro slot de cuota.
 9. Si el email interno falla pero la fila se guardó, el estado esperado es `AVISO_PENDIENTE`; el frontend debe decir que la consulta quedó registrada y el aviso interno está pendiente, nunca pedir un reenvío ciego.
 
-## Analítica de la ruta
+## Analítica de la web principal y de la ruta
 
-No es requisito para aprobar el staging de la web general. La ruta debe funcionar aunque la analítica no esté configurada.
+**No instalar Google Analytics, Tag Manager ni otra analítica nueva en la web corporativa.** Para esta fase son suficientes Search Console, las métricas básicas ya disponibles y la atribución que se guarda únicamente cuando un lead envía el formulario.
+
+El Pergamino es una excepción separada: tiene una analítica pseudonimizada/reducida ya operativa, una Sheet histórica asociada y un QR físico que apunta a la URL actual. Deben conservarse.
 
 - El progreso local debe funcionar sin consentimiento de analítica.
 - La analítica sólo puede enviarse después de pulsar “Permitir estadísticas técnicas”.
 - El botón de opt-in sólo debe aparecer si `/api/route-event.php` confirma `status: ready`; sin upstream configurado la ruta debe indicar que no se envía analítica.
 - La preferencia debe poder revocarse.
 - El navegador sólo debe llamar a `/api/route-event.php`; no debe contener una URL real de Apps Script.
-- Si se conserva provisionalmente el receptor actual de analítica del piloto, recuperar su URL desde el backup de producción y guardarla sólo como `analytics_upstream` en el archivo privado. Tratar ese receptor histórico como integridad limitada porque su URL fue pública anteriormente; no considerarlo un secreto ni una barrera de autenticación.
-- Si no se configura, comprobar que el opt-in queda oculto y que la ruta declara que no se envían estadísticas; registrar la analítica como pendiente no bloqueante.
+- Recuperar del backup/configuración vigente la URL del receptor actual de analítica del Pergamino y mantenerlo conectado a su **misma Sheet existente**. Guardar la URL sólo como `analytics_upstream` en el archivo privado del staging; no exponerla de nuevo en el HTML/JS.
+- Verificar con un evento ficticio que el dato llega a la hoja histórica correcta y que no se introduce nombre, email, teléfono ni el texto libre de las respuestas.
+- No cambiar la URL pública del juego. El QR existente debe seguir resolviendo exactamente a `/ruta-pergamino-3-culturas-Tarazona/`.
+- Si por alguna limitación técnica no puede conectarse temporalmente en staging, el juego debe seguir funcionando y el opt-in quedar oculto; **esto no autoriza a crear una nueva Sheet o un nuevo receptor sin consultarlo**.
 
 ## QA obligatorio de staging
 

@@ -36,6 +36,28 @@ Antes de escribir en Hostinger:
 - Verificar PHP y extensión cURL. Los proxies son `/api/lead.php` y `/api/route-event.php`.
 - Comprobar cabeceras: CSP, X-Content-Type-Options, Referrer-Policy, X-Frame-Options, Permissions-Policy, COOP y X-Robots-Tag de staging. No activar HSTS sobre un dominio que todavía no esté correctamente servido por HTTPS.
 
+## Campus + Studio · producto propio
+
+La web pública nueva presenta Campus + Studio como producto propio mediante `/plataforma/`.
+
+Arquitectura que debe mantenerse:
+- `educandoconchispa.com/plataforma/`: landing comercial, SEO y conversión;
+- `campus.educandoconchispa.com`: aplicación Campus en el VPS;
+- `studio.educandoconchispa.com`: aplicación Studio en el VPS;
+- `ia.educandoconchispa.com`: IA educativa, Diagnóstico CHISPA y recursos.
+
+No copiar Campus/Studio a Hostinger, no incrustarlos con iframe y no cambiar su infraestructura en este despliegue. Son enlaces externos desde la web pública y, por tanto, no deben formar parte de su carga inicial.
+
+En staging verificar:
+1. que `/plataforma/` carga y explica Campus + Studio;
+2. que Home, Formación, Proyectos y Sobre mí enlazan a la landing;
+3. que `campus.` y `studio.` resuelven al servicio esperado o a su autenticación correspondiente;
+4. que `ia.` sigue operativo y conserva el Diagnóstico CHISPA;
+5. que la pestaña Network de la Home no realiza fetch, iframe, preload ni carga de assets desde Campus/Studio;
+6. si Campus o Studio no están disponibles, documentarlo como bloqueo de producto; no ocultarlo ni redirigirlo a otra cosa sin aprobación.
+
+La promesa pública permitida es: Studio ayuda a preparar una propuesta, el docente la revisa y decide, el contenido llega al Campus como borrador editable y la publicación/gestión permanece bajo control docente. No prometer autopublicación por IA, generación ilimitada ni métricas de uso no verificadas.
+
 ## Google Sheets + Apps Script para leads
 
 La nueva Sheet debe quedar en la cuenta/Drive de `educandoconchispa@gmail.com`. **No asumir acceso del agente a ese Drive.** José hará el setup de Google si es necesario; Work debe dejar todo preparado y pedir sólo esa intervención puntual.

@@ -58,7 +58,7 @@ if(leadForm){
    const controller=new AbortController();const t=setTimeout(()=>controller.abort(),window.CHISPA_LEADS.timeoutMs||9000);
    const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),signal:controller.signal});clearTimeout(t);
    const data=await res.json();if(!res.ok||!['success','ok'].includes(data.status))throw new Error(data.code||'SEND_FAILED');
-   status.textContent=payload.branch==='education'&&data.resourceAccepted?'Solicitud registrada. Revisa tu correo para recibir el Diagnóstico CHISPA.':'Gracias. Tu consulta ha quedado registrada y José ha recibido el aviso.';status.classList.add('success');leadForm.reset();
+   status.textContent=data.notified===false?'Gracias. Tu consulta ha quedado registrada correctamente. El aviso interno ha quedado pendiente de revisión; no necesitas volver a enviarla.':'Gracias. Tu consulta ha quedado registrada y el aviso interno se ha enviado.';status.classList.add('success');leadForm.reset();
   }catch(err){status.textContent='No he podido confirmar el registro. No vuelvas a enviar varias veces: usa el email directo si tu consulta es urgente.';status.classList.add('error');}
   finally{submit.disabled=false;}
  });

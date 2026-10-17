@@ -22,6 +22,7 @@ jobs:
       - run: python3 -m unittest discover -s educando-web/tests -v
       - run: node --test educando-web/tests/lead-magnet.test.cjs
       - run: node --test educando-web/tests/lead-gateway.test.cjs
+      - run: node --test educando-web/tests/contact-attribution.test.cjs
       - run: python3 educando-web/scripts/package_hostinger.py
       - run: unzip -t educando-web/deploy/Hostinger_Web_Prueba.zip
       - run: python3 -m json.tool educando-web/docs/hostinger-package-check.json >/dev/null

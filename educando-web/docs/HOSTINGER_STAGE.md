@@ -41,7 +41,9 @@ Se requiere una copia del `.htaccess` activo. Las reglas activas de redirección
 
 En Apps Script, ejecutar primero `setupLeadGateway()` para crear/reutilizar la Sheet, preparar encabezados y generar el token en modo seco. Después crear fuera de `public_html` un archivo `.chispa-leads.php` basado en `docs/lead-config.example.php.txt`. Debe contener la URL real de Apps Script y un token aleatorio largo. En Apps Script, el mismo token se guarda como Script Property `INGRESS_TOKEN`; nunca se copia a JavaScript público.
 
-El proxy de leads requiere PHP con cURL. Si falla la configuración devuelve `NOT_CONFIGURED` y no finge que el lead fue guardado. La analítica opcional del Pergamino usa un segundo upstream guardado en el mismo archivo privado.
+El proxy de leads requiere PHP con cURL; el proxy del Pergamino requiere también mbstring (`mb_substr`). Si falla la configuración devuelve `NOT_CONFIGURED` y no finge que el lead fue guardado. La analítica opcional del Pergamino usa un segundo upstream guardado en el mismo archivo privado.
+
+Si el document root de staging está dentro de `public_html/chispa-prueba`, no usar sin revisión la ubicación privada por defecto del proxy: su padre sería el `public_html` de producción. Establecer `CHISPA_CONFIG_PATH` con una ruta absoluta fuera de todos los document roots y comprobarla en el PHP real, sin mostrar el contenido de la configuración.
 
 ## Siguiente paso en hPanel
 

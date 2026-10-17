@@ -33,7 +33,7 @@ Antes de escribir en Hostinger:
 - Si Hostinger permite protección por contraseña para staging sin romper la prueba, activarla. En cualquier caso conservar `noindex,nofollow` y `robots.txt: Disallow: /`.
 - Descargar desde GitHub Actions el artefacto `chispa-hostinger-staging` del último run verde de la PR #3. No usar un ZIP antiguo sólo porque esté en el repositorio.
 - Extraer el ZIP en el document root de staging. `index.html` y `.htaccess` deben quedar en su raíz.
-- Verificar PHP y extensión cURL. Los proxies son `/api/lead.php` y `/api/route-event.php`.
+- Verificar PHP y extensiones cURL y mbstring. `route-event.php` utiliza `mb_substr()`. Los proxies son `/api/lead.php` y `/api/route-event.php`.
 - Comprobar cabeceras: CSP, X-Content-Type-Options, Referrer-Policy, X-Frame-Options, Permissions-Policy, COOP y X-Robots-Tag de staging. No activar HSTS sobre un dominio que todavía no esté correctamente servido por HTTPS.
 
 ## Campus + Studio · producto propio
@@ -67,6 +67,7 @@ Procedimiento mínimo para José:
 2. Ejecutar manualmente `setupLeadGateway()`. La función puede crear por sí sola el spreadsheet `Educando con chIspA · Leads`, la pestaña `Leads`, encabezados, `INGRESS_TOKEN`, `OWNER_EMAIL`, límite y `DRY_RUN=true`.
 3. Revisar que la Sheet creada tenga 17 columnas y desplegar el script como Web App de staging ejecutándose con la cuenta propietaria y con acceso que permita al proxy de Hostinger realizar POST HTTPS.
 4. **No pegar el token ni credenciales en el chat.** La URL del Web App y el token deben copiarse directamente al archivo privado de Hostinger situado fuera del document root, usando `educando-web/docs/lead-config.example.php.txt` como plantilla.
+5. Si el staging está anidado en `public_html/chispa-prueba`, el directorio padre que calculan por defecto los proxies sigue siendo `public_html`. No guardar allí la configuración privada: establecer `CHISPA_CONFIG_PATH` con una ruta absoluta fuera de **todos** los document roots y verificar su lectura efectiva en el PHP del staging. No copiar los valores al repositorio ni a las evidencias.
 
 Una vez José haya hecho ese setup, Work debe continuar automáticamente con:
 - prueba `DRY_RUN=true` sin escritura ni email;

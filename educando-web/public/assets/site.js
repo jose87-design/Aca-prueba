@@ -83,7 +83,11 @@ document.querySelectorAll('a[href]').forEach(a=>{
  try{
   const u=new URL(a.href,location.href);
   if(u.origin!==location.origin||!/(?:\/contacto\/|\/contacto\/index\.html)$/.test(u.pathname))return;
-  a.addEventListener('click',()=>saveContactAttribution(u.searchParams.get('branch')||'other',u.searchParams.get('cta')||''));
+  a.addEventListener('click',()=>{
+   const target=new URL(a.href,location.href);
+   if(target.origin!==location.origin||!/(?:\/contacto\/|\/contacto\/index\.html)$/.test(target.pathname))return;
+   saveContactAttribution(target.searchParams.get('branch')||'other',target.searchParams.get('cta')||'');
+  });
  }catch{}
 });
 

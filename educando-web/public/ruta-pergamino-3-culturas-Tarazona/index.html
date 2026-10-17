@@ -702,25 +702,27 @@ const UI = {
     wrongMsg2:"Todavía no. Usa la segunda pista o revisa la curiosidad del lugar.",
     progress:(c,t,p)=>`${c}/${t} enigmas · ${p}%`,
     footerTagline:"Una iniciativa turística para el Ayuntamiento de Tarazona · Experiencia gamificada por",
-    privacyHeroCta:"✓ Aceptar y comenzar ruta",
+    privacyHeroCta:"▶ Iniciar la investigación",
     privacyAcceptedHeroCta:"▶ Iniciar la investigación",
-    privacyPanel:`<p class="privacy-small">Al pulsar <strong>Aceptar y comenzar ruta</strong>, aceptas el uso técnico necesario para guardar el progreso y estadísticas mínimas del piloto.</p>
+    privacyPanel:`<p class="privacy-small"><strong>El progreso se guarda localmente</strong> en este navegador para que la ruta funcione. Las estadísticas anónimas del piloto son opcionales.</p>
       <details class="privacy-details">
-        <summary>Ver aviso de uso técnico y estadísticas</summary>
+        <summary>Ver privacidad y estadísticas opcionales</summary>
         <div class="privacy-detail-body">
-          <p>Para que la ruta funcione, utilizamos almacenamiento local técnico en este navegador. También recogemos estadísticas técnicas de uso para mejorar la experiencia: inicio, avance, pistas y finalización.</p>
+          <p>La ruta usa almacenamiento local técnico para recordar avance y respuestas. Si lo autorizas, también enviamos estadísticas mínimas: inicio, avance, pistas y finalización.</p>
           <ul>
             <li>No pedimos nombre, email ni teléfono.</li>
             <li>No envíes datos personales en las respuestas de los enigmas.</li>
-            <li>Los identificadores de sesión se renuevan y no se usan para publicidad ni seguimiento externo.</li>
+            <li>Los identificadores de sesión no se usan para publicidad ni seguimiento entre sitios.</li>
           </ul>
+          <p><button class="btn-secondary" type="button" onclick="acceptAnalytics()">Permitir estadísticas anónimas</button></p>
         </div>
       </details>`,
-    privacyPanelAccepted:`<p class="privacy-small">Aviso aceptado. Progreso local y estadísticas técnicas activadas para esta ruta.</p>
+    privacyPanelAccepted:`<p class="privacy-small">Estadísticas anónimas activadas. Puedes retirarlas para los próximos eventos cuando quieras.</p>
       <details class="privacy-details">
-        <summary>Ver aviso de uso técnico</summary>
+        <summary>Ver privacidad y preferencias</summary>
         <div class="privacy-detail-body">
-          <p>La ruta usa almacenamiento local técnico y estadísticas mínimas de uso: inicio, avance, pistas y finalización. No se solicita identificación personal.</p>
+          <p>El progreso técnico sigue guardándose localmente. La analítica opcional registra sólo uso de la ruta, sin nombre, email ni teléfono.</p>
+          <p><button class="btn-secondary" type="button" onclick="rejectAnalytics()">Desactivar estadísticas</button></p>
         </div>
       </details>`,
     anonymousInfo:`<strong>Datos mínimos del piloto:</strong> no pedimos nombre, email ni teléfono. Puedes indicar, si quieres, el tipo y tamaño aproximado del grupo.
@@ -775,25 +777,27 @@ const UI = {
     wrongMsg2:"Still not right. Use the second hint or re-read the fact above.",
     progress:(c,t,p)=>`${c}/${t} stops · ${p}%`,
     footerTagline:"A tourism initiative for Tarazona City Council · Gamified experience by",
-    privacyHeroCta:"✓ Accept and start trail",
+    privacyHeroCta:"▶ Begin the investigation",
     privacyAcceptedHeroCta:"▶ Begin the investigation",
-    privacyPanel:`<p class="privacy-small">By tapping <strong>Accept and start trail</strong>, you accept the technical use needed to save progress and minimal pilot statistics.</p>
+    privacyPanel:`<p class="privacy-small"><strong>Progress is stored locally</strong> in this browser so the trail can work. Anonymous pilot statistics are optional.</p>
       <details class="privacy-details">
-        <summary>View technical use and statistics notice</summary>
+        <summary>View privacy and optional statistics</summary>
         <div class="privacy-detail-body">
-          <p>To make the trail work, we use technical local storage in this browser. We also collect technical usage statistics to improve the experience: start, progress, hints and completion.</p>
+          <p>The trail uses technical local storage to remember progress and answers. If you allow it, we also send minimal statistics: start, progress, hints and completion.</p>
           <ul>
             <li>We do not ask for name, email or phone number.</li>
             <li>Do not submit personal data in the riddle answers.</li>
-            <li>Session identifiers are renewed and are not used for advertising or external tracking.</li>
+            <li>Session identifiers are not used for advertising or cross-site tracking.</li>
           </ul>
+          <p><button class="btn-secondary" type="button" onclick="acceptAnalytics()">Allow anonymous statistics</button></p>
         </div>
       </details>`,
-    privacyPanelAccepted:`<p class="privacy-small">Notice accepted. Local progress and technical statistics are active for this trail.</p>
+    privacyPanelAccepted:`<p class="privacy-small">Anonymous statistics enabled. You can disable them for future events at any time.</p>
       <details class="privacy-details">
-        <summary>View technical use notice</summary>
+        <summary>View privacy and preferences</summary>
         <div class="privacy-detail-body">
-          <p>The trail uses technical local storage and minimal usage statistics: start, progress, hints and completion. No personal identification is requested.</p>
+          <p>Technical progress remains stored locally. Optional analytics records route usage only, without name, email or phone number.</p>
+          <p><button class="btn-secondary" type="button" onclick="rejectAnalytics()">Disable statistics</button></p>
         </div>
       </details>`,
     anonymousInfo:`<strong>Minimal pilot data:</strong> we do not ask for name, email or phone number. Optionally, you can indicate the approximate type and size of your group.
@@ -828,7 +832,7 @@ const UI = {
    2) Copiar la URL de implementación de Apps Script.
    3) YA INTEGRADA ABAJO. Cambiar solo si despliegas otro Apps Script.
    Ejemplo:
-   const ANALYTICS_ENDPOINT = "https://script.google.com/macros/s/AKfycbx1v-yzajQrF_hgL1JxXQLC2Gi9UFRxDJnDYKGn6EfEY5W8-PMzlwBFO0thWxHcgiRW/exec";
+   const ANALYTICS_ENDPOINT = "/api/route-event.php";
 ════════════════════════════════════ */
 const ANALYTICS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzJGQxPbL9cEkQCiOW6PdT6GL9NHvzODuGLZWAElNx-jioCMvuD3fKYX8SSwTZkyFsp/exec";
 const ROUTE_ID = "ruta_pergamino_tarazona";
@@ -839,24 +843,22 @@ const VISIT_KEY = "ruta-pergamino-v2-visit-id";
 const START_KEY = "ruta-pergamino-v2-start-time";
 const GROUP_KEY = "ruta-pergamino-v2-group-info";
 const LAST_ACTIVITY_KEY = "ruta-pergamino-v2-last-activity";
-const CONSENT_KEY = "ruta-pergamino-v2-privacy-consent";
-const CONSENT_VERSION = "privacy-start-v1";
+const ANALYTICS_ANALYTICS_CONSENT_KEY = "ruta-pergamino-v2-analytics-consent";
+const ANALYTICS_ANALYTICS_CONSENT_VERSION = "analytics-v1";
 const SESSION_TTL_MS = 60 * 60 * 1000; // nueva sesión tras 60 min sin actividad
 
-function hasPrivacyConsent() {
-  return localStorage.getItem(CONSENT_KEY) === CONSENT_VERSION;
+function hasAnalyticsConsent() {
+  return localStorage.getItem(ANALYTICS_CONSENT_KEY) === ANALYTICS_CONSENT_VERSION;
 }
 function updatePrivacyUI() {
   const u = (typeof ui === "function") ? ui() : UI.es;
   const panel = document.getElementById("privacyStartPanel");
-  const cta = document.getElementById("heroCta");
-  const accepted = hasPrivacyConsent();
+  const accepted = hasAnalyticsConsent();
   if (panel) {
     panel.innerHTML = accepted ? u.privacyPanelAccepted : u.privacyPanel;
     panel.classList.toggle("accepted", accepted);
     panel.style.display = "block";
   }
-  if (cta) cta.textContent = accepted ? u.privacyAcceptedHeroCta : u.privacyHeroCta;
 }
 function showPrivacyNotice() {
   updatePrivacyUI();
@@ -866,19 +868,17 @@ function showPrivacyNotice() {
   panel.scrollIntoView({ behavior: "smooth", block: "center" });
   window.setTimeout(() => panel.classList.remove("required"), 450);
 }
-function acceptPrivacyAndStart() {
-  localStorage.setItem(CONSENT_KEY, CONSENT_VERSION);
+function acceptAnalytics() {
+  localStorage.setItem(ANALYTICS_CONSENT_KEY, ANALYTICS_CONSENT_VERSION);
   updatePrivacyUI();
-  trackEvent("privacy_notice_accepted", { source: "privacy_panel" });
-  startRoute({ force: true, source: "privacy_accept" });
-  document.getElementById("ruta")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  trackEvent("analytics_consent", { source: "privacy_panel" });
+}
+function rejectAnalytics() {
+  localStorage.removeItem(ANALYTICS_CONSENT_KEY);
+  updatePrivacyUI();
 }
 function handleStartCta(event) {
   if (event) event.preventDefault();
-  if (!hasPrivacyConsent()) {
-    acceptPrivacyAndStart();
-    return false;
-  }
   startRoute({ source: "start_button" });
   document.getElementById("ruta")?.scrollIntoView({ behavior: "smooth", block: "start" });
   return false;
@@ -945,7 +945,7 @@ function getActiveSeconds() {
   return Math.max(0, Math.round((Date.now() - last) / 1000));
 }
 function startRoute(options = {}) {
-  if (!options.force && !hasPrivacyConsent()) {
+  if (!options.force && !hasAnalyticsConsent()) {
     showPrivacyNotice();
     return false;
   }
@@ -960,7 +960,7 @@ function startRoute(options = {}) {
   return true;
 }
 function ensureRouteStarted(extra = {}) {
-  if (!hasPrivacyConsent()) {
+  if (!hasAnalyticsConsent()) {
     showPrivacyNotice();
     return false;
   }
@@ -983,7 +983,7 @@ function getGroupInfo() {
   catch { return {}; }
 }
 function saveGroupInfo() {
-  if (!hasPrivacyConsent()) {
+  if (!hasAnalyticsConsent()) {
     showPrivacyNotice();
     return false;
   }
@@ -1005,7 +1005,7 @@ function getCompletedCount() {
   return stops().filter(s => STATE.feedback[s.id]?.ok).length;
 }
 function trackEvent(eventType, extra = {}) {
-  if (!hasPrivacyConsent()) return;
+  if (!hasAnalyticsConsent()) return;
   if (!ANALYTICS_ENDPOINT || ANALYTICS_ENDPOINT.includes("PEGAR_AQUI")) return;
   const now = new Date();
   const group = getGroupInfo();
@@ -1020,7 +1020,7 @@ function trackEvent(eventType, extra = {}) {
     app_version: APP_VERSION,
     session_id: getSessionId(),
     visit_id: getVisitId(),
-    consent_version: CONSENT_VERSION,
+    consent_version: ANALYTICS_CONSENT_VERSION,
     event_type: eventType,
     language: (typeof STATE !== "undefined" && STATE?.lang) ? STATE.lang : "es",
     group_type: extra.group_type || group.group_type || "",
@@ -1206,7 +1206,7 @@ function buildCard(stop) {
 }
 
 /* ── ACTIONS ── */
-function setAnswer(id, val) { STATE.answers[id] = val; if (hasPrivacyConsent()) saveState(); }
+function setAnswer(id, val) { STATE.answers[id] = val; if (hasAnalyticsConsent()) saveState(); }
 
 function showHint(id) {
   if (!ensureRouteStarted({ source: "hint" })) return;

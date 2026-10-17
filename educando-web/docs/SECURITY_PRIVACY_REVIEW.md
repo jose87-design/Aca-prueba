@@ -35,14 +35,20 @@ Estado: **apto para staging cuando el último CI esté verde; NO apto todavía p
 - La atribución de rama, CTA y UTM se conserva temporalmente en `sessionStorage`, sin meter contenido introducido por el usuario en la URL.
 - El formulario general no concede permiso para marketing. Cualquier campaña futura necesitará un consentimiento separado.
 
+### Analítica de la web principal
+
+- No se instala Google Analytics, Tag Manager ni analítica de terceros en la web corporativa en esta fase.
+- Search Console y la atribución de leads enviados son suficientes para el volumen actual y evitan añadir una capa innecesaria de cookies/consentimiento.
+
 ### Pergamino de las Tres Culturas
 
 - Se restauró la versión íntegra de la ruta después de detectar un parche que había truncado sus objetos `STOPS` y `UI`.
 - `check_route.py` comprueba tamaño mínimo, presencia de datos/UI, endpoint mismo-origen, nombres de consentimiento y sintaxis del JavaScript embebido.
 - El progreso local técnico funciona sin aceptar analítica.
-- La analítica técnica es opcional, afirmativa y revocable.
+- La analítica técnica existente es pseudonimizada/reducida, opcional, afirmativa y revocable; su información y control permanecen dentro del propio juego.
 - Cuando se autoriza, utiliza identificadores aleatorios de sesión/visita; no se presenta como anónima.
 - La página no contiene la URL real del receptor de analítica.
+- Deben preservarse la URL pública actual del juego, el QR que apunta a ella y la Sheet histórica existente; el proxy de staging sólo oculta el receptor, no migra los datos a otra hoja.
 
 ### Servidor / Hostinger
 

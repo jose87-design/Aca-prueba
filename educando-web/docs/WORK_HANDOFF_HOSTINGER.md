@@ -12,7 +12,7 @@ Llevar la rama `codex/educando-web-review` de `jose87-design/Aca-prueba` a un **
 - `LeadGateway.gs` guarda primero en Sheets y después intenta el aviso por email. n8n e IA no son parte del camino crítico.
 - El Diagnóstico CHISPA educativo existente sigue en `ia.educandoconchispa.com`; no sustituirlo todavía. Su candidato `LeadMagnet.gs` ya corrige el aviso al propietario incluso sin teléfono, pero no se despliega sobre el flujo vivo sin staging específico.
 - La ruta `/ruta-pergamino-3-culturas-Tarazona/` debe conservarse. Su progreso usa almacenamiento local técnico; la analítica del piloto es opcional y revocable.
-- La política de privacidad nueva usa información por capas. El aviso legal contiene `LEGAL_PENDING` para forma/condición profesional, NIF y domicilio/establecimiento profesional. El empaquetador bloquea producción mientras falten.
+- La política de privacidad nueva usa información por capas. El aviso legal contiene `LEGAL_PENDING` para NIF y domicilio/establecimiento profesional. El empaquetador bloquea producción mientras falten.
 - La PR tiene controles de secretos, PHP, JS, tests de gateways, integridad de ruta, empaquetado y reproducibilidad. Usar sólo un artefacto `chispa-hostinger-staging` procedente del **último run verde** de GitHub Actions.
 
 ## Regla de seguridad y rollback
@@ -84,7 +84,7 @@ Probar con datos ficticios y documentar evidencia:
 **Staging puede declararse listo** sólo si backup verificado, CI verde, HTTPS, navegación, ruta y formulario E2E funcionan y no hay secretos públicos.
 
 **Producción sigue NO-GO** aunque staging esté perfecto hasta:
-- completar forma jurídica/condición profesional, NIF y domicilio/establecimiento profesional del aviso legal;
+- completar NIF y domicilio/establecimiento profesional del aviso legal;
 - volver a generar el paquete de producción con el `.htaccess` activo revisado;
 - realizar una última comparación staging/producción y tener rollback explícito;
 - recibir autorización expresa de José para publicar.

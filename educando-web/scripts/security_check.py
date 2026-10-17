@@ -31,5 +31,6 @@ for ht in [ROOT/'deploy/hostinger-stage.htaccess',ROOT/'deploy/hostinger-product
  text=ht.read_text()
  for required in ['Content-Security-Policy','X-Content-Type-Options','Referrer-Policy','Permissions-Policy']:
   if required not in text:issues.append(f'{ht.name}: missing {required}')
+ if 'connect-src \'self\';' not in text or 'connect-src \'self\' https://script.google.com' in text:issues.append(f'{ht.name}: browser CSP must not allow direct Apps Script connections')
 print(json.dumps({'issues':issues},ensure_ascii=False,indent=2))
 sys.exit(bool(issues))

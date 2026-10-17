@@ -25,3 +25,7 @@ Pruebas locales, sin llamadas a Google: `node --test tests/lead-magnet.test.cjs`
 ## Gateway general de consultas
 
 `LeadGateway.gs` es el candidato para la nueva captación multirrama. Usa una hoja dedicada con 17 columnas, guarda antes de enviar el aviso interno y no depende de n8n ni de un modelo de IA. Configurar `LEADS_SHEET_ID`, `LEADS_SHEET_NAME`, `OWNER_EMAIL`, `DRY_RUN=true` y `MAX_LEADS_PER_HOUR`. Probar con datos ficticios antes de conectar `public/assets/lead-config.js` al endpoint de staging. Una caída del aviso deja el lead en estado `AVISO_PENDIENTE`; el formulario ya no debe prometer que el aviso llegó si el backend no lo confirma.
+
+## Preparación rápida de LeadGateway
+
+Al copiar `LeadGateway.gs` a un proyecto de Apps Script, ejecutar manualmente `setupLeadGateway()` una sola vez. Si no existe `LEADS_SHEET_ID`, crea un spreadsheet «Educando con chIspA · Leads», prepara la pestaña `Leads`, genera `INGRESS_TOKEN`, configura el email público del propietario y deja `DRY_RUN=true`. La función devuelve la URL/ID de la hoja y el token para trasladarlo al archivo privado de Hostinger. No pegues ese token en JavaScript público ni en GitHub.

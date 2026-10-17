@@ -5,6 +5,8 @@ class PackagingTest(unittest.TestCase):
  def test_stage(self):self.assertIn('noindex,nofollow',pack.indexed_html('<html><head></head></html>',False))
  def test_production(self):
   s=pack.indexed_html('<head><meta name="robots" content="noindex,nofollow"></head>',True);self.assertIn('index,follow',s);self.assertNotIn('noindex',s);self.assertEqual(s.count('name="robots"'),1)
+ def test_legal_pages_can_stay_noindex(self):
+  self.assertIn('noindex,nofollow',pack.indexed_html('<head><meta name="robots" content="index,follow"></head>',False))
  def test_production_requires_htaccess(self):
   with self.assertRaises(ValueError):pack.check_htaccess(None)
  def test_blog_redirect(self):

@@ -55,10 +55,11 @@ No es requisito para aprobar el staging de la web general. La ruta debe funciona
 
 - El progreso local debe funcionar sin consentimiento de analítica.
 - La analítica sólo puede enviarse después de pulsar “Permitir estadísticas técnicas”.
+- El botón de opt-in sólo debe aparecer si `/api/route-event.php` confirma `status: ready`; sin upstream configurado la ruta debe indicar que no se envía analítica.
 - La preferencia debe poder revocarse.
 - El navegador sólo debe llamar a `/api/route-event.php`; no debe contener una URL real de Apps Script.
 - Si se conserva provisionalmente el receptor actual de analítica del piloto, recuperar su URL desde el backup de producción y guardarla sólo como `analytics_upstream` en el archivo privado. Tratar ese receptor histórico como integridad limitada porque su URL fue pública anteriormente; no considerarlo un secreto ni una barrera de autenticación.
-- Si no se configura, registrar la analítica como pendiente no bloqueante; no inventar que se reciben eventos.
+- Si no se configura, comprobar que el opt-in queda oculto y que la ruta declara que no se envían estadísticas; registrar la analítica como pendiente no bloqueante.
 
 ## QA obligatorio de staging
 

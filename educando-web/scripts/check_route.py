@@ -19,7 +19,7 @@ required=[
     'function refreshAnalyticsAvailability()',
     'privacyPanelUnavailable',
     'ANALYTICS_AVAILABLE',
-    'if (!hasAnalyticsConsent()) return;',
+    'if (!ANALYTICS_AVAILABLE || !hasAnalyticsConsent()) return;',
 ]
 for token in required:
     if token not in text: issues.append('missing '+token)

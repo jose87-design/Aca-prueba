@@ -1,7 +1,7 @@
 /* Configuración pública de captación.
- * No incluyas secretos aquí. El endpoint de Apps Script/Hostinger se configura en staging.
+ * No contiene secretos: el navegador sólo llama al proxy mismo-origen.
  */
 window.CHISPA_LEADS = {
-  endpoint: "",
-  timeoutMs: 9000
+  endpoint: "/api/lead.php",
+  timeoutMs: 11000
 };

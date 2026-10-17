@@ -27,5 +27,5 @@ jobs:
       - run: node --check educando-web/public/assets/site.js
       - run: php -l educando-web/public/api/lead.php
       - run: php -l educando-web/public/api/route-event.php
-      - name: Verify source build succeeds
-        run: test -f educando-web/public/index.html && test -f educando-web/public/contacto/index.html
+      - name: Verify generated pages match source
+        run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml

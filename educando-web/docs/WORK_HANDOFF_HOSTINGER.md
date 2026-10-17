@@ -23,7 +23,8 @@ Antes de escribir en Hostinger:
 2. Identificar el plan, dominio `educandoconchispa.com`, document root real, subdominios, WordPress u otras aplicaciones, bases de datos, tareas cron, versión PHP y configuración activa.
 3. Hacer backup completo de la producción vigente, incluido `.htaccess`, archivos ocultos relevantes y cualquier base de datos asociada. Preferencia: backup fuera del document root + ZIP descargable/exportable.
 4. Verificar que el backup es legible y registrar fecha, tamaño y listado/hash cuando sea posible. Guardar también una copia separada del `.htaccess` activo.
-5. No borrar, mover, sobrescribir ni renombrar producción antes de demostrar que el backup permite rollback.
+5. No subir el backup crudo de producción al repositorio público de GitHub: puede contener configuración, credenciales, logs o datos que no deben versionarse. Mantenerlo en almacenamiento privado de Hostinger o en una exportación privada controlada.
+6. No borrar, mover, sobrescribir ni renombrar producción antes de demostrar que el backup permite rollback.
 
 ## Staging Hostinger
 

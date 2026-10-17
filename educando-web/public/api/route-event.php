@@ -13,7 +13,8 @@ function fail_route(int $status, string $code): never {
     exit;
 }
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') fail_route(405, 'METHOD');
+$method = (string)($_SERVER['REQUEST_METHOD'] ?? '');
+if (!in_array($method, ['GET','POST'], true)) fail_route(405, 'METHOD');
 $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
 $origin = (string)($_SERVER['HTTP_ORIGIN'] ?? '');
 if ($origin !== '') {
@@ -21,8 +22,10 @@ if ($origin !== '') {
     if ($originHost === '' || $originHost !== preg_replace('/:\d+$/', '', $host)) fail_route(403, 'ORIGIN');
 }
 
-$length = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
-if ($length < 2 || $length > 10000) fail_route(413, 'SIZE');
+if ($method === 'POST') {
+    $length = (int)($_SERVER['CONTENT_LENGTH'] ?? 0);
+    if ($length < 2 || $length > 10000) fail_route(413, 'SIZE');
+}
 
 $configPath = getenv('CHISPA_CONFIG_PATH') ?: dirname((string)($_SERVER['DOCUMENT_ROOT'] ?? __DIR__)) . '/.chispa-leads.php';
 if (!is_file($configPath) || !is_readable($configPath)) fail_route(503, 'NOT_CONFIGURED');
@@ -33,6 +36,10 @@ $upstream = (string)($config['analytics_upstream'] ?? '');
 $token = (string)($config['ingress_token'] ?? '');
 $perIp = (int)($config['analytics_max_per_ip_hour'] ?? 180);
 if (!preg_match('#^https://script\.google\.com/macros/s/[A-Za-z0-9_-]+/exec$#', $upstream) || strlen($token) < 24) fail_route(503, 'NOT_CONFIGURED');
+if ($method === 'GET') {
+    echo json_encode(['status' => 'ready'], JSON_UNESCAPED_SLASHES);
+    exit;
+}
 if ($perIp < 10 || $perIp > 1000) $perIp = 180;
 
 $ip = (string)($_SERVER['REMOTE_ADDR'] ?? 'unknown');

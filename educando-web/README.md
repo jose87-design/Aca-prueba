@@ -1,6 +1,6 @@
 # Educando con chIspA · web de revisión
 
-Web estática propia: formación, empresas, proyectos, actualidad, perfil y contacto. Conserva identidad cyan/verde, incorpora scroll progresivo, titulares dinámicos y pausa de movimiento. No precisa Node ni base de datos para servirla.
+Web propia para formación, empresas, experiencias, actualidad, perfil y captación. Conserva identidad cyan/verde, incorpora segmentación por rama, diagnóstico de procesos, brief de proyectos, movimiento reducido y un formulario de leads con backend separado.
 
 ## Revisar
 
@@ -26,8 +26,8 @@ python3 scripts/check.py
 
 Versión de revisión, **no producción**. Todas las páginas tienen `noindex,nofollow`; robots bloquea el rastreo. El staging necesita además acceso privado o autenticación. `docs/sitemap.production-candidate.xml` está fuera del directorio público.
 
-El contacto solo prepara un correo local. No se han migrado ni probado los formularios de la versión vigente. No hay cookies, analítica, reproductores externos, peticiones a modelos de IA ni scripts de terceros en la web nueva.
+El contacto llama al proxy mismo-origen `/api/lead.php`, que valida, limita abuso y reenvía al Apps Script sólo desde servidor. La URL upstream y el token de ingreso deben vivir fuera de `public_html`. El gateway de Apps Script guarda antes de avisar por email. El Pergamino usa almacenamiento local técnico y analítica opcional separada; el navegador envía sus eventos a `/api/route-event.php`, no al Apps Script real. No hay IA ni n8n en el camino crítico.
 
-La página IA original, privacidad y experiencias existentes siguen en su destino actual. No subir este directorio para sustituir todo `public_html`: se perderían aplicaciones que aquí no se incluyen.
+Staging incluye una política de privacidad nueva y un aviso legal con bloqueo `LEGAL_PENDING`: el paquete de producción no puede generarse hasta completar forma jurídica/condición profesional, NIF y domicilio o establecimiento profesional. No sustituir `public_html` hasta inventariar y copiar las aplicaciones/rutas que no estén incluidas.
 
 Ver `docs/AUDIT.md`, `docs/WEBSITE_SOURCE_OF_TRUTH.md`, `WEB_UPDATE_RULES.md`, `docs/MIGRATION.md`, `docs/VALIDATION.md` y `automation/README.md`.

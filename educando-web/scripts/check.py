@@ -33,6 +33,16 @@ for f,p in pages.items():
   elif u.fragment and target in pages and u.fragment not in pages[target].ids:issues.append(f'{f}: missing anchor {link}')
 for expected in ['ruta-pergamino-3-culturas-Tarazona/index.html','ruta-pergamino-3-culturas-Tarazona/info.html']:
  if not (PUBLIC/expected).exists():issues.append('Missing preserved route: '+expected)
+product_path=PUBLIC/'plataforma/index.html'
+if not product_path.exists():issues.append('Missing product landing: plataforma/index.html')
+else:
+ product=product_path.read_text()
+ for url in ['https://campus.educandoconchispa.com','https://studio.educandoconchispa.com','https://ia.educandoconchispa.com/#contacto']:
+  if url not in product:issues.append('Platform link missing: '+url)
+ home=(PUBLIC/'index.html').read_text()
+ education=(PUBLIC/'formacion/index.html').read_text()
+ if 'plataforma/index.html' not in home:issues.append('Home product link missing')
+ if 'plataforma/index.html' not in education:issues.append('Education product link missing')
 contact=(PUBLIC/'contacto/index.html').read_text()
 if 'https://ia.educandoconchispa.com/#contacto' not in contact:issues.append('PDF form access missing')
 for p in ROOT.rglob('*'):

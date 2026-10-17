@@ -34,7 +34,7 @@ Se requiere una copia del `.htaccess` activo. Las reglas activas de redirección
 
 ## Configuración privada del proxy
 
-Crear fuera de `public_html` un archivo `.chispa-leads.php` basado en `docs/lead-config.example.php.txt`. Debe contener la URL real de Apps Script y un token aleatorio largo. En Apps Script, el mismo token se guarda como Script Property `INGRESS_TOKEN`; nunca se copia a JavaScript público.
+En Apps Script, ejecutar primero `setupLeadGateway()` para crear/reutilizar la Sheet, preparar encabezados y generar el token en modo seco. Después crear fuera de `public_html` un archivo `.chispa-leads.php` basado en `docs/lead-config.example.php.txt`. Debe contener la URL real de Apps Script y un token aleatorio largo. En Apps Script, el mismo token se guarda como Script Property `INGRESS_TOKEN`; nunca se copia a JavaScript público.
 
 El proxy de leads requiere PHP con cURL. Si falla la configuración devuelve `NOT_CONFIGURED` y no finge que el lead fue guardado. La analítica opcional del Pergamino usa un segundo upstream guardado en el mismo archivo privado.
 

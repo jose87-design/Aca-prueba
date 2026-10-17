@@ -4,16 +4,17 @@
  */
 function cfg_(){
  const p=PropertiesService.getScriptProperties();
- const c={sheetId:p.getProperty('LEADS_SHEET_ID'),sheetName:p.getProperty('LEADS_SHEET_NAME')||'Leads',owner:p.getProperty('OWNER_EMAIL')||'',dry:p.getProperty('DRY_RUN')!=='false',hourly:Number(p.getProperty('MAX_LEADS_PER_HOUR')||40)};
- if(!c.sheetId||!c.owner||!Number.isInteger(c.hourly)||c.hourly<1||c.hourly>200)throw new Error('CONFIG');
+ const c={sheetId:p.getProperty('LEADS_SHEET_ID'),sheetName:p.getProperty('LEADS_SHEET_NAME')||'Leads',owner:p.getProperty('OWNER_EMAIL')||'',ingressToken:p.getProperty('INGRESS_TOKEN')||'',dry:p.getProperty('DRY_RUN')!=='false',hourly:Number(p.getProperty('MAX_LEADS_PER_HOUR')||40)};
+ if(!c.sheetId||!c.owner||c.ingressToken.length<24||!Number.isInteger(c.hourly)||c.hourly<1||c.hourly>200)throw new Error('CONFIG');
  return c;
 }
 function txt_(v,n){if(v==null)return'';if(typeof v!=='string')throw new Error('INPUT');const s=v.trim();if(s.length>n)throw new Error('INPUT');return s;}
 function safeCell_(s){return /^[\s]*[=+@-]/.test(s)?"'"+s:s;}
 function esc_(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function parse_(e){
+function parse_(e,c){
  const raw=e&&e.postData&&e.postData.contents;if(!raw||raw.length>12000)throw new Error('INPUT');
  const x=JSON.parse(raw);if(!x||typeof x!=='object'||Array.isArray(x))throw new Error('INPUT');
+ if(txt_(x.ingress_token,200)!==c.ingressToken)throw new Error('AUTH');
  if(txt_(x.company,500))throw new Error('HONEYPOT');if(x.consentimiento!==true)throw new Error('CONSENT');
  const email=txt_(x.email,254).toLowerCase();if(!/^[^\s@,;<>\r\n]+@[^\s@,;<>\r\n]+\.[^\s@,;<>\r\n]+$/.test(email))throw new Error('EMAIL');
  const branch=['education','business','experiences','speaking','other'].includes(x.branch)?x.branch:'other';
@@ -30,7 +31,7 @@ function notify_(c,d){
 }
 function out_(x){return ContentService.createTextOutput(JSON.stringify(x)).setMimeType(ContentService.MimeType.JSON);}
 function doPost(e){
- let d,c;try{d=parse_(e);c=cfg_();}catch(err){return out_({status:'error',code:['CONSENT','EMAIL','HONEYPOT','INPUT'].includes(err.message)?err.message:'INVALID_REQUEST'});}
+ let d,c;try{c=cfg_();d=parse_(e,c);}catch(err){return out_({status:'error',code:['CONSENT','EMAIL','HONEYPOT','INPUT'].includes(err.message)?err.message:'INVALID_REQUEST'});}
  if(c.dry)return out_({status:'validated',stored:false,notified:false});
  const lock=LockService.getScriptLock();if(!lock.tryLock(10000))return out_({status:'error',code:'BUSY'});
  let sheet,row;

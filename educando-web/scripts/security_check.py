@@ -11,12 +11,17 @@ patterns={
  'bearer_token':re.compile(r'Bearer\s+[A-Za-z0-9._~-]{24,}',re.I),
  'apps_script_deployment':re.compile(r'https://script\.google\.com/macros/s/[A-Za-z0-9_-]{20,}/exec'),
 }
-for p in PUBLIC.rglob('*'):
- if not p.is_file() or p.suffix.lower() in {'.jpg','.jpeg','.png','.webp','.zip','.ico'}: continue
+binary={'.jpg','.jpeg','.png','.webp','.zip','.ico','.pdf'}
+for p in ROOT.rglob('*'):
+ if not p.is_file() or p.suffix.lower() in binary: continue
  try:text=p.read_text(errors='ignore')
  except Exception:continue
  for name,rx in patterns.items():
+  if name=='apps_script_deployment' and PUBLIC not in p.parents: continue
   if rx.search(text):issues.append(f'{p.relative_to(ROOT)}: possible {name}')
+for p in ROOT.rglob('*'):
+ if p.is_file() and (p.name in {'.env','.env.local','.env.production'} or p.suffix.lower() in {'.pem','.key','.p12','.pfx'}):
+  issues.append(f'{p.relative_to(ROOT)}: sensitive filename must not be tracked')
 cfg=(PUBLIC/'assets/lead-config.js').read_text()
 if 'endpoint: "/api/lead.php"' not in cfg:issues.append('lead-config.js must use same-origin /api/lead.php')
 site=(PUBLIC/'assets/site.js').read_text()

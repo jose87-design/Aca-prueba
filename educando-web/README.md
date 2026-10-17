@@ -30,4 +30,4 @@ El contacto llama al proxy mismo-origen `/api/lead.php`, que valida, limita abus
 
 Staging incluye una política de privacidad nueva y un aviso legal con bloqueo `LEGAL_PENDING`: el paquete de producción no puede generarse hasta completar forma jurídica/condición profesional, NIF y domicilio o establecimiento profesional. No sustituir `public_html` hasta inventariar y copiar las aplicaciones/rutas que no estén incluidas.
 
-Ver `docs/AUDIT.md`, `docs/WEBSITE_SOURCE_OF_TRUTH.md`, `WEB_UPDATE_RULES.md`, `docs/MIGRATION.md`, `docs/VALIDATION.md` y `automation/README.md`.
+Ver `docs/AUDIT.md`, `docs/WEBSITE_SOURCE_OF_TRUTH.md`, `WEB_UPDATE_RULES.md`, `docs/MIGRATION.md`, `docs/VALIDATION.md`, `docs/SECURITY_PRIVACY_REVIEW.md`, `docs/WORK_HANDOFF_HOSTINGER.md` y `automation/README.md`.

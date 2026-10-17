@@ -28,9 +28,33 @@ function privacySafeReferrer(){
  if(!document.referrer)return'';
  try{const u=new URL(document.referrer);return (u.origin+u.pathname).slice(0,500);}catch{return'';}
 }
-function readAttribution(branch){
+const CONTACT_ATTR_KEY='chispa-contact-attribution-v1';
+function currentAttribution(branch,cta=''){
  const q=params();
- return {branch,source_page:location.pathname,source_cta:q.get('cta')||'',utm_source:q.get('utm_source')||'',utm_medium:q.get('utm_medium')||'',utm_campaign:q.get('utm_campaign')||'',referrer:privacySafeReferrer()};
+ return {branch,source_page:location.pathname,source_cta:cta||q.get('cta')||'',utm_source:q.get('utm_source')||'',utm_medium:q.get('utm_medium')||'',utm_campaign:q.get('utm_campaign')||'',referrer:privacySafeReferrer(),ts:Date.now()};
+}
+function saveContactAttribution(branch,cta=''){
+ try{sessionStorage.setItem(CONTACT_ATTR_KEY,JSON.stringify(currentAttribution(branch,cta)));}catch{}
+}
+function getContactAttribution(branch){
+ try{
+  const raw=sessionStorage.getItem(CONTACT_ATTR_KEY);if(!raw)return null;
+  const data=JSON.parse(raw);
+  if(!data||data.branch!==branch||Date.now()-Number(data.ts)>30*60*1000)return null;
+  return data;
+ }catch{return null;}
+}
+function readAttribution(branch){
+ const q=params(),saved=getContactAttribution(branch);
+ return {
+  branch,
+  source_page:saved?.source_page||location.pathname,
+  source_cta:q.get('cta')||saved?.source_cta||'',
+  utm_source:saved?.utm_source||q.get('utm_source')||'',
+  utm_medium:saved?.utm_medium||q.get('utm_medium')||'',
+  utm_campaign:saved?.utm_campaign||q.get('utm_campaign')||'',
+  referrer:saved?.referrer||privacySafeReferrer()
+ };
 }
 const CONTACT_SUMMARY_KEY='chispa-contact-summary-v1';
 function saveContactSummary(branch,summary){
@@ -47,13 +71,20 @@ function takeContactSummary(branch){
  }catch{return'';}
 }
 function contactUrl(branch,summary,cta){
- saveContactSummary(branch,summary);
+ saveContactSummary(branch,summary);saveContactAttribution(branch,cta);
  const u=new URL('../contacto/index.html',location.href);u.searchParams.set('branch',branch);if(cta)u.searchParams.set('cta',cta);return u.href;
 }
 
 document.querySelectorAll('[data-branch-link]').forEach(a=>{
  const branch=a.dataset.branchLink||'other',cta=a.dataset.cta||'';
  const u=new URL(a.href,location.href);u.searchParams.set('branch',branch);if(cta)u.searchParams.set('cta',cta);a.href=u.href;
+});
+document.querySelectorAll('a[href]').forEach(a=>{
+ try{
+  const u=new URL(a.href,location.href);
+  if(u.origin!==location.origin||!/(?:\/contacto\/|\/contacto\/index\.html)$/.test(u.pathname))return;
+  a.addEventListener('click',()=>saveContactAttribution(u.searchParams.get('branch')||'other',u.searchParams.get('cta')||''));
+ }catch{}
 });
 
 const leadForm=document.querySelector('#lead-form');
@@ -77,7 +108,7 @@ if(leadForm){
    const controller=new AbortController();const t=setTimeout(()=>controller.abort(),window.CHISPA_LEADS.timeoutMs||9000);
    const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),signal:controller.signal});clearTimeout(t);
    const data=await res.json();if(!res.ok||!['success','ok'].includes(data.status))throw new Error(data.code||'SEND_FAILED');
-   status.textContent=data.notified===false?'Gracias. Tu consulta ha quedado registrada correctamente. El aviso interno ha quedado pendiente de revisión; no necesitas volver a enviarla.':'Gracias. Tu consulta ha quedado registrada y el aviso interno se ha enviado.';status.classList.add('success');leadForm.reset();delete leadForm.dataset.requestId;
+   status.textContent=data.notified===false?'Gracias. Tu consulta ha quedado registrada correctamente. El aviso interno ha quedado pendiente de revisión; no necesitas volver a enviarla.':'Gracias. Tu consulta ha quedado registrada y el aviso interno se ha enviado.';status.classList.add('success');leadForm.reset();delete leadForm.dataset.requestId;try{sessionStorage.removeItem(CONTACT_ATTR_KEY);}catch{}
   }catch(err){status.textContent='No he podido confirmar el registro. No vuelvas a enviar varias veces: usa el email directo si tu consulta es urgente.';status.classList.add('error');}
   finally{submit.disabled=false;}
  });

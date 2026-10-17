@@ -16,6 +16,9 @@ required=[
     'function hasAnalyticsConsent()',
     'function acceptAnalytics()',
     'function rejectAnalytics()',
+    'function refreshAnalyticsAvailability()',
+    'privacyPanelUnavailable',
+    'ANALYTICS_AVAILABLE',
     'if (!hasAnalyticsConsent()) return;',
 ]
 for token in required:

@@ -51,7 +51,7 @@ No copiar Campus/Studio a Hostinger, no incrustarlos con iframe y no cambiar su 
 En staging verificar:
 1. que `/plataforma/` carga y explica Campus + Studio;
 2. que Home, Formación, Proyectos y Sobre mí enlazan a la landing;
-3. que `campus.` y `studio.` resuelven al servicio esperado o a su autenticación correspondiente;
+3. que `campus.` resuelve al servicio esperado, y que Studio se ofrece sólo dentro del flujo docente autenticado de Campus;
 4. que `ia.` sigue operativo y conserva el Diagnóstico CHISPA;
 5. que la pestaña Network de la Home no realiza fetch, iframe, preload ni carga de assets desde Campus/Studio;
 6. si Campus o Studio no están disponibles, documentarlo como bloqueo de producto; no ocultarlo ni redirigirlo a otra cosa sin aprobación.
@@ -127,3 +127,9 @@ No fusionar PR #3 ni sustituir `public_html` como parte de este encargo.
 ## Entrega que Work debe devolver
 
 Entregar un informe corto pero verificable con: ubicación/fecha del backup, document roots identificados, URL de staging, run/commit exacto usado, hash del ZIP si está disponible, resultado de cada prueba crítica, Sheet/Apps Script creados sin revelar tokens, cabeceras verificadas, riesgos residuales, estado GO/NO-GO y **una sola sección final con las acciones humanas que sigan siendo imprescindibles**.
+
+## Refinamiento visual y acceso Studio (19/10/2026)
+
+- Studio se presenta como capacidad del producto en `/plataforma/` pero no hay enlace público directo a `studio.educandoconchispa.com`; el docente lo abre desde Campus autenticado.
+- El staging debe probar display y motion en 320/375/390/768/1024/1440 px, interacción teclado, `prefers-reduced-motion`, control `Pausar movimiento`, overflow y hover en tarjetas.
+- No tocar producción ni declarar QA visual completado sin acceder al staging real. Si la URL de prueba no es accesible, informar y mantener validación visual pendiente.

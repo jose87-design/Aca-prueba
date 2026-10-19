@@ -1,0 +1,108 @@
+{
+  "name": "01-health-review · comprobar sin notificar",
+  "active": false,
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Prueba manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "targets",
+      "name": "Destinos a revisar",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{url:'https://educandoconchispa.com/',system:'web'}}];"
+      }
+    },
+    {
+      "id": "http",
+      "name": "Comprobar HTTP",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 10000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "evaluate",
+      "name": "Resultado para revisión",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().map((item,i)=>({json:{system:$('Destinos a revisar').all()[i]?.json.system||'unknown',checked_at:new Date().toISOString(),status:Number(item.json.statusCode||0),ok:Number(item.json.statusCode||0)>=200&&Number(item.json.statusCode||0)<400,error:item.json.error?.message||null,notification_sent:false}}));"
+      }
+    }
+  ],
+  "connections": {
+    "Prueba manual": {
+      "main": [
+        [
+          {
+            "node": "Destinos a revisar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Destinos a revisar": {
+      "main": [
+        [
+          {
+            "node": "Comprobar HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comprobar HTTP": {
+      "main": [
+        [
+          {
+            "node": "Resultado para revisión",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Madrid",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all"
+  },
+  "tags": []
+}

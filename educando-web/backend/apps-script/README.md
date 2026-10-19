@@ -1,0 +1,31 @@
+# PDF automático: candidato no desplegado
+
+`LeadMagnet.gs` sustituye el script compartido por el titular y conserva las nueve columnas: Fecha, Nombre, Email, Teléfono, Perfil, Mensaje, Consentimiento, Estado, Fecha_envío. No contiene IDs reales ni credenciales.
+
+## Instalación controlada
+
+1. Guardar una copia del código actual y mantener su despliegue vigente.
+2. Crear un proyecto de prueba de Apps Script con este archivo y una hoja/PDF de prueba.
+3. En Configuración del proyecto → Propiedades del script, configurar `SHEET_ID`, `SHEET_NAME`, `PDF_FILE_ID`, `OWNER_EMAIL`, `DRY_RUN=true` y `MAX_SENDS_PER_HOUR=20`. Para producción conservar los valores del script original, sin publicarlos en GitHub.
+4. Adaptar y comprobar el formulario: debe enviar JSON con `consentimiento: true` solo cuando se marque la casilla, y `company: ""` como campo trampa. Los demás campos son nombre, email, teléfono (`telefono`), perfil y mensaje. El formulario antiguo debe revisarse antes de sustituir su backend.
+5. Probar primero en modo seco. No escribe filas ni envía correo. Una prueba real con una dirección controlada exige `DRY_RUN=false`, permisos de Sheets/Drive/Mail y un despliegue de prueba.
+6. Revisar el PDF recibido y las nueve columnas antes de actualizar el despliegue existente. El modo seco no verifica permisos, cuota ni acceso al PDF.
+
+## Estados y límites
+
+`ACEPTADO_ENVIO` significa que MailApp aceptó la llamada; no confirma entrega. `ENVIANDO`, `PENDIENTE` y `REVISION_ENVIO` bloquean reenvíos automáticos y exigen revisión manual. Los históricos `ENVIADO` también bloquean duplicados, pero el script antiguo podía marcarlos antes del envío: no son prueba de entrega.
+
+El bloqueo protege solicitudes concurrentes. El presupuesto horario persistente limita intentos de envío; no verifica que quien solicita controle el email ni sustituye una protección antispam completa. El aviso interno se procesa por separado y su fallo no convierte el envío aceptado en un error.
+
+Un `fetch` con `no-cors` devuelve una respuesta opaca: el frontend no puede anunciar éxito de procesamiento. No se ha implementado aquí un proxy ni desplegado este candidato.
+
+Pruebas locales, sin llamadas a Google: `node --test tests/lead-magnet.test.cjs` desde educando-web.
+
+
+## Gateway general de consultas
+
+`LeadGateway.gs` es el candidato para la nueva captación multirrama. Usa una hoja dedicada con 17 columnas, guarda antes de enviar el aviso interno y no depende de n8n ni de un modelo de IA. Configurar `LEADS_SHEET_ID`, `LEADS_SHEET_NAME`, `OWNER_EMAIL`, `INGRESS_TOKEN`, `DRY_RUN=true` y `MAX_LEADS_PER_HOUR`. El token debe coincidir con el archivo privado del proxy de Hostinger y nunca aparecer en el frontend. Probar con datos ficticios antes de conectar `public/assets/lead-config.js` al endpoint de staging. Una caída del aviso deja el lead en estado `AVISO_PENDIENTE`; el formulario ya no debe prometer que el aviso llegó si el backend no lo confirma.
+
+## Preparación rápida de LeadGateway
+
+Al copiar `LeadGateway.gs` a un proyecto de Apps Script, ejecutar manualmente `setupLeadGateway()` una sola vez. Si no existe `LEADS_SHEET_ID`, crea un spreadsheet «Educando con chIspA · Leads», prepara la pestaña `Leads`, genera `INGRESS_TOKEN`, configura el email público del propietario y deja `DRY_RUN=true`. La función devuelve la URL/ID de la hoja y el token para trasladarlo al archivo privado de Hostinger. No pegues ese token en JavaScript público ni en GitHub.

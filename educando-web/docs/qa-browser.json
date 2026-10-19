@@ -1,0 +1,217 @@
+[
+  {
+    "width": 1440,
+    "route": "/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/pymes/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/formacion/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/proyectos/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/blog/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/blog/ia-idiomas-flor/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/blog/antes-de-automatizar/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/sobre-mi/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/contacto/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/charlas/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/pymes/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/formacion/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/proyectos/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/blog/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/blog/ia-idiomas-flor/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/blog/antes-de-automatizar/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/sobre-mi/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/contacto/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/charlas/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/pymes/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/formacion/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/proyectos/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/blog/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/blog/ia-idiomas-flor/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/blog/antes-de-automatizar/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/sobre-mi/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/contacto/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "width": 320,
+    "route": "/charlas/",
+    "overflow": false,
+    "h1": 1,
+    "errors": []
+  },
+  {
+    "nojs": true,
+    "body": true,
+    "overflow": false
+  }
+]

@@ -6,8 +6,16 @@ name: Node.js CI
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - "educando-web/**"
+      - ".github/workflows/chispa-web-review.yml"
+      - ".github/workflows/node.js.yml"
   pull_request:
     branches: [ "main" ]
+    paths-ignore:
+      - "educando-web/**"
+      - ".github/workflows/chispa-web-review.yml"
+      - ".github/workflows/node.js.yml"
 
 jobs:
   build:

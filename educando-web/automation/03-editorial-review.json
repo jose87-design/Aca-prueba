@@ -1,0 +1,74 @@
+{
+  "name": "03-editorial-review · propuesta sin publicar",
+  "active": false,
+  "nodes": [
+    {
+      "id": "manual",
+      "name": "Prueba manual",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "brief",
+      "name": "Brief editorial",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return [{json:{topic:'Un proceso concreto que merece automatizarse',audience:'empresas y organizaciones',sources:[],status:'draft',approved:false,contains_client_details:false}}];"
+      }
+    },
+    {
+      "id": "gate",
+      "name": "Puerta editorial",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "return $input.all().map(({json:x})=>({json:{...x,status:'needs_human_review',publish:false,missing_evidence:(x.sources||[]).length===0,notification_sent:false}}));"
+      }
+    }
+  ],
+  "connections": {
+    "Prueba manual": {
+      "main": [
+        [
+          {
+            "node": "Brief editorial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brief editorial": {
+      "main": [
+        [
+          {
+            "node": "Puerta editorial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "Europe/Madrid",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "all"
+  },
+  "tags": []
+}

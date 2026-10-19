@@ -1,0 +1,8 @@
+{
+  "review_date": "2026-09-29",
+  "items": [
+    {"id":"linkedin-milestone","status":"needs_evidence","missing":["exact follower milestone","date","public source"],"publish":false},
+    {"id":"unad-september","status":"needs_evidence","missing":["confirmation event took place","public material"],"publish":false},
+    {"id":"credentials","status":"needs_review","missing":["supporting certificates","role dates reconciliation"],"publish":false}
+  ]
+}

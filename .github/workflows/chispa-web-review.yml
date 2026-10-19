@@ -1,0 +1,42 @@
+name: Chispa web review
+on:
+  pull_request:
+    paths:
+      - 'educando-web/**'
+      - '.github/workflows/chispa-web-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 educando-web/scripts/build.py
+      - run: python3 educando-web/scripts/check.py
+      - run: python3 educando-web/scripts/security_check.py
+      - run: python3 educando-web/scripts/check_route.py
+      - run: python3 -m unittest discover -s educando-web/tests -v
+      - run: node --test educando-web/tests/lead-magnet.test.cjs
+      - run: node --test educando-web/tests/lead-gateway.test.cjs
+      - run: node --test educando-web/tests/contact-attribution.test.cjs
+      - run: python3 educando-web/scripts/package_hostinger.py
+      - run: unzip -t educando-web/deploy/Hostinger_Web_Prueba.zip
+      - run: python3 -m json.tool educando-web/docs/hostinger-package-check.json >/dev/null
+      - run: node --check educando-web/public/assets/site.js
+      - run: php -l educando-web/public/api/lead.php
+      - run: php -l educando-web/public/api/route-event.php
+      - name: Verify generated pages match source
+        run: git diff --exit-code -- educando-web/public educando-web/docs/sitemap.production-candidate.xml
+      - name: Publish validated Hostinger staging package
+        uses: actions/upload-artifact@v4
+        with:
+          name: chispa-hostinger-staging
+          path: |
+            educando-web/deploy/Hostinger_Web_Prueba.zip
+            educando-web/docs/hostinger-package-check.json
+          retention-days: 7
+          if-no-files-found: error

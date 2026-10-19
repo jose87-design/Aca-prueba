@@ -37,10 +37,11 @@ product_path=PUBLIC/'plataforma/index.html'
 if not product_path.exists():issues.append('Missing product landing: plataforma/index.html')
 else:
  product=product_path.read_text()
- for url in ['https://campus.educandoconchispa.com','https://studio.educandoconchispa.com','https://ia.educandoconchispa.com/#contacto']:
+ for url in ['https://campus.educandoconchispa.com','https://ia.educandoconchispa.com/#contacto']:
   if url not in product:issues.append('Platform link missing: '+url)
  home=(PUBLIC/'index.html').read_text()
  education=(PUBLIC/'formacion/index.html').read_text()
+ if 'https://studio.educandoconchispa.com' in product:issues.append('Studio direct public link forbidden: enter through Campus')
  if 'plataforma/index.html' not in home:issues.append('Home product link missing')
  if 'plataforma/index.html' not in education:issues.append('Education product link missing')
 contact=(PUBLIC/'contacto/index.html').read_text()

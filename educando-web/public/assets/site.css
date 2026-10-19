@@ -23,3 +23,46 @@ html:not(.js) .menu,html:not(.js) .motion-control{display:none}@media(max-width:
 @media(max-width:1050px){.product-spotlight{gap:24px;padding:30px}.product-mini-flow{grid-template-columns:1fr 1fr}.product-mini-flow b{display:none}}
 @media(max-width:780px){.product-spotlight,.product-duo{grid-template-columns:1fr}.product-spotlight{padding:24px}.product-flow{grid-template-columns:1fr 1fr}.product-card{padding:26px}}
 @media(max-width:420px){.product-flow{grid-template-columns:1fr}.product-mini-flow{grid-template-columns:1fr}}
+
+/* Refinamiento de tarjetas y movimiento: ligero, accesible y sin dependencias. */
+.branch-card,.service,.project,.detail-card,.product-card,.article-card,.product-spotlight{
+  min-width:0;overflow-wrap:break-word;
+}
+.branch-card,.service,.project,.detail-card,.product-card,.article-card{
+  transition:transform .24s ease,border-color .24s ease,background-color .24s ease,box-shadow .24s ease;
+}
+@media(hover:hover) and (pointer:fine){
+  .branch-card:hover,.service:hover,.project:hover,.detail-card:hover,.product-card:hover,.article-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 16px 42px rgba(0,0,0,.16);
+    border-color:#6c9157;
+  }
+}
+.product-card{display:flex;flex-direction:column;align-items:flex-start}
+.product-card ul{width:100%;margin-bottom:24px}
+.product-card>.btn{margin-top:auto}
+.product-card>.form-note{margin-top:auto;max-width:44ch}
+.product-spotlight,.product-card,.branch-card,.service,.project,.detail-card{isolation:isolate}
+.product-mini-flow span{min-width:0;overflow-wrap:anywhere}
+@media(max-width:900px){
+  .nav{gap:12px}
+  .links{gap:10px;font-size:11px}
+}
+@media(max-width:780px){
+  .product-card,.detail-card,.branch-card{min-height:0}
+  .product-duo{gap:16px}
+  .product-spotlight{gap:26px}
+  .product-flow{gap:16px}
+  .platform-actions .btn{justify-content:center}
+}
+@media(max-width:380px){
+  .platform-actions{flex-direction:column;align-items:stretch}
+  .product-mini-flow{grid-template-columns:1fr 1fr}
+  .product-mini-flow span{min-height:56px}
+}
+@media(prefers-reduced-motion:reduce){
+  .branch-card,.service,.project,.detail-card,.product-card,.article-card,.product-spotlight{transition:none!important}
+  .branch-card:hover,.service:hover,.project:hover,.detail-card:hover,.product-card:hover,.article-card:hover{transform:none!important}
+}
+.motion-off .branch-card,.motion-off .service,.motion-off .project,.motion-off .detail-card,.motion-off .product-card,.motion-off .article-card{transition:none!important}
+.motion-off .branch-card:hover,.motion-off .service:hover,.motion-off .project:hover,.motion-off .detail-card:hover,.motion-off .product-card:hover,.motion-off .article-card:hover{transform:none!important}
